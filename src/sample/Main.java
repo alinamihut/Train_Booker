@@ -13,33 +13,56 @@ import javafx.scene.control.Button;
 import java.io.IOException;
 
 public class Main extends Application {
-
-    Button buttonLogIn, buttonSignUp;
+    Stage window;
+    Button buttonLogIn, buttonSignUp, buttonGoBack,buttonGoBack2;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Train Booker");
-        //primaryStage.setScene(new Scene(root, 300, 275));
-        //primaryStage.show();
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setPadding(new Insets(20, 0, 20, 20));
+        window=primaryStage;
+        BorderPane layout1 = new BorderPane();
+        layout1.setPadding(new Insets(20, 0, 20, 20));
         buttonSignUp = new Button("Sign Up");
         buttonLogIn = new Button("Log In");
-
         buttonSignUp.setMaxWidth(Double.MAX_VALUE);
         buttonLogIn.setMaxWidth(Double.MAX_VALUE);
 
-        VBox vbButtons = new VBox();
-        vbButtons.setSpacing(10);
-        vbButtons.setPadding(new Insets(0, 20, 10, 20));
-        vbButtons.getChildren().addAll(buttonSignUp, buttonLogIn);
+        VBox layout1Buttons = new VBox();
+        layout1Buttons.setSpacing(10);
+        layout1Buttons.setPadding(new Insets(0, 20, 10, 20));
 
-        borderPane.setBottom(vbButtons);
-        Scene scene = new Scene(borderPane, 400, 400);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+      //
+
+        layout1Buttons.getChildren().addAll(buttonLogIn,buttonSignUp);
+        layout1.setBottom(layout1Buttons);
+        Scene first = new Scene(layout1, 400, 400);
+
+        VBox layout2 = new VBox();
+        layout2.setSpacing(10);
+        layout2.setPadding(new Insets(0, 20, 10, 20));
+
+        Scene sceneLogIn=new Scene (layout2, 400, 400);
+        buttonLogIn.setOnAction(e->window.setScene(sceneLogIn));
+        buttonGoBack= new Button ("Go back");
+        layout2.getChildren().addAll(buttonGoBack);
+        buttonGoBack.setOnAction(e-> window.setScene(first));
+
+        VBox layout3 = new VBox();
+        layout3.setSpacing(10);
+        layout3.setPadding(new Insets(0, 20, 10, 20));
+
+        Scene sceneSignUp=new Scene (layout3, 400, 400);
+        buttonSignUp.setOnAction(e->window.setScene(sceneSignUp));
+        buttonGoBack2= new Button ("Go back");
+        layout3.getChildren().addAll(buttonGoBack2);
+        buttonGoBack2.setOnAction(e-> window.setScene(first));
+
+        window.setScene(first);
+        window.show();
+
+        //buttonSignUp.setOnAction(e->window.setScene(sceneSignUp));
     }
 
     public static void main(String[] args) throws IOException {
