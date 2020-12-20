@@ -14,31 +14,55 @@ import java.io.IOException;
 
 public class Main extends Application {
 
-    Button buttonLogIn, buttonSignUp;
+    Stage window;
+    Scene sceneFirst, sceneLogIn, sceneSignUp;
+    Button buttonLogIn, buttonSignUp, buttonGoBackSignUp, buttonGoBackLogIn;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Train Booker");
+        window.setTitle("Train Booker");
         //primaryStage.setScene(new Scene(root, 300, 275));
-        //primaryStage.show();
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setPadding(new Insets(20, 0, 20, 20));
+        window = primaryStage;
+
         buttonSignUp = new Button("Sign Up");
-        buttonLogIn = new Button("Log In");
-
         buttonSignUp.setMaxWidth(Double.MAX_VALUE);
+        //buttonSignUp.setOnAction(e -> window.setScene(sceneSignUp));
+
+        buttonLogIn = new Button("Log In");
         buttonLogIn.setMaxWidth(Double.MAX_VALUE);
+        buttonLogIn.setOnAction(e -> window.setScene(sceneLogIn));
+
+        BorderPane borderPaneFirst = new BorderPane();
+        borderPaneFirst.setPadding(new Insets(20, 0, 20, 20));
 
         VBox vbButtons = new VBox();
         vbButtons.setSpacing(10);
         vbButtons.setPadding(new Insets(0, 20, 10, 20));
         vbButtons.getChildren().addAll(buttonSignUp, buttonLogIn);
+        borderPaneFirst.setBottom(vbButtons);
+        sceneFirst = new Scene(borderPaneFirst, 400, 400);
 
-        borderPane.setBottom(vbButtons);
-        Scene scene = new Scene(borderPane, 400, 400);
-        primaryStage.setScene(scene);
+
+        //buttonGoBackSignUp = new Button("Go Back");
+        //buttonGoBackSignUp.setOnAction(e -> window.setScene(sceneFirst));
+
+        //BorderPane borderPaneSignUp = new BorderPane();
+        //borderPaneSignUp.setPadding(new Insets(20, 0, 20, 20));
+        //borderPaneSignUp.getChildren().add(buttonGoBackSignUp);
+        //sceneSignUp = new Scene (borderPaneSignUp, 400, 400);
+
+
+        //buttonGoBackLogIn = new Button("Go Back");
+        //buttonGoBackLogIn.setOnAction(e -> window.setScene(sceneFirst));
+
+        BorderPane borderPaneLogIn = new BorderPane();
+        //borderPaneLogIn.setPadding(new Insets(20, 0, 20, 20));
+        //borderPaneLogIn.getChildren().add(buttonGoBackLogIn);
+        sceneLogIn = new Scene (borderPaneLogIn, 400, 400);
+
+        window.setScene(sceneFirst);
         primaryStage.show();
     }
 
