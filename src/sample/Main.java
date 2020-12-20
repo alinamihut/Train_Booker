@@ -37,8 +37,6 @@ public class Main extends Application {
         vbButtons.setPadding(new Insets(0, 20, 10, 20));
         vbButtons.getChildren().addAll(label1, buttonSignUp, buttonLogIn);
 
-        //4a267867a2095513e5077a877cce00f3b8699e53
-        //75eed8063328da6eab68c71ed93c6791686085ba
         borderPane.setBottom(vbButtons);
         Scene scene = new Scene(borderPane, 400, 400);
         primaryStage.setScene(scene);
