@@ -9,26 +9,25 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
+import javafx.stage.Window;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Main extends Application {
     Stage window;
-    Button buttonLogIn, buttonSignUp, btnGoBackLogIn, btnGoBackSignUp;
+    Button buttonLogIn, buttonSignUp;
     Label labelWelcome;
 
     @Override
@@ -68,46 +67,43 @@ public class Main extends Application {
         gridLogIn.setHgap(10);
         gridLogIn.setVgap(12);
 
-        HBox hbButtons = new HBox();
-        hbButtons.setSpacing(10.0);
-
         Button btnSubmit = new Button("Submit");
-        btnGoBackLogIn = new Button ("Go back");
-        btnGoBackLogIn.setStyle("-fx-font-size: 12pt;");
         btnSubmit.setStyle("-fx-font-size: 12pt;");
+
+        Button btnGoBackLogIn = new Button ("Go back");
+        btnGoBackLogIn.setStyle("-fx-font-size: 12pt;");
+        btnGoBackLogIn.setOnAction(e-> window.setScene(sceneStart));
 
         Label labelUsername = new Label("Username:");
         TextField tfName = new TextField();
         Label labelPassword = new Label("Password:");
-        PasswordField pfPwd = new PasswordField();
+        PasswordField pfPassword = new PasswordField();
 
+        HBox hbButtons = new HBox();
+        hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnSubmit, btnGoBackLogIn);
-        btnGoBackLogIn.setOnAction(e-> window.setScene(sceneStart));
+
         gridLogIn.add(labelUsername, 0, 0);
         gridLogIn.add(tfName, 1, 0);
         gridLogIn.add(labelPassword, 0, 1);
-        gridLogIn.add(pfPwd, 1, 1);
+        gridLogIn.add(pfPassword, 1, 1);
         gridLogIn.add(hbButtons, 0, 2, 2, 1);
 
         Scene sceneLogIn = new Scene (gridLogIn, 400, 400);
         buttonLogIn.setOnAction(e->window.setScene(sceneLogIn));
 
-
         //SCENE SIGN UP
 
         GridPane gridSignUp = new GridPane();
-        gridSignUp.setAlignment(Pos.CENTER);
+        gridSignUp.setAlignment(Pos.CENTER_LEFT);
         gridSignUp.setHgap(10);
         gridSignUp.setVgap(12);
-
-        HBox hbButtonsSignUp = new HBox();
-        hbButtonsSignUp.setSpacing(10.0);
+        gridSignUp.setPadding(new Insets(30));
 
         Button btnSubmitSignUp = new Button("Submit");
-        btnGoBackSignUp = new Button ("Go back");
-        btnGoBackSignUp.setStyle("-fx-font-size: 12pt;");
         btnSubmitSignUp.setStyle("-fx-font-size: 12pt;");
-
+        Button btnGoBackSignUp = new Button ("Go back");
+        btnGoBackSignUp.setStyle("-fx-font-size: 12pt;");
 
         //FIRST NAME, LAST NAME, EMAIL, PHONE NUMBER, RESIDENCE PLACE, PASSWORD
         Label labelLastNameSignUp = new Label("Last Name:");
@@ -125,6 +121,8 @@ public class Main extends Application {
         Label labelConfirmPasswordSignUp = new Label("Confirm password:");
         PasswordField pfConfirmPwdSignUp = new PasswordField();
 
+        HBox hbButtonsSignUp = new HBox();
+        hbButtonsSignUp.setSpacing(10.0);
         hbButtonsSignUp.getChildren().addAll(btnSubmitSignUp, btnGoBackSignUp);
         btnGoBackSignUp.setOnAction(e-> window.setScene(sceneStart));
 
@@ -144,7 +142,7 @@ public class Main extends Application {
         gridSignUp.add(pfConfirmPwdSignUp, 1, 6);
         gridSignUp.add(hbButtonsSignUp, 0, 7, 7, 1);
 
-        Scene sceneSignUp = new Scene (gridSignUp, 500, 600);
+        Scene sceneSignUp = new Scene (gridSignUp, 700, 400);
         buttonSignUp.setOnAction(e->window.setScene(sceneSignUp));
 
 
@@ -159,22 +157,85 @@ public class Main extends Application {
 
         //writeNewUser(admin);
 
-        //parse data from user sign up
-
-        Label lblError = new Label("Invalid phone number!");
+        Label lblErrorPhoneNumber = new Label("Invalid phone number!");
+        Label lblErrorPassword = new Label("Please enter the same password as above!");
+        Label lblErrorEmail = new Label("Please enter a valid email address!");
 
         User user = new User();
         btnSubmitSignUp.setOnAction(e ->{
-            if(validPhoneNumber(tfPhoneSignUp, tfPhoneSignUp.getText(), lblError, gridSignUp)){
+            if(tfFirstNameSignUp.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter your first name");
+                return;
+            }
+            if(tfLastNameSignUp.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter your last name");
+                return;
+            }
+            if(tfEmailSignUp.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter your email");
+                return;
+            }
+            if(tfPhoneSignUp.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter a phone number");
+                return;
+            }
+            if(tfResidenceSignUp.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter your residence place");
+                return;
+            }
+            if(pfPwdSignUp.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter a password");
+                return;
+            }
+            if(pfConfirmPwdSignUp.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please confirm password");
+                return;
+            }
+            if(!tfEmailSignUp.getText().matches("^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")){
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter a valid email address");
+                return;
+            }
+            if(!tfPhoneSignUp.getText().matches("\\d{9}")){
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter a valid phone number");
+                return;
+            }
+            if(!pfPwdSignUp.getText().equals(pfConfirmPwdSignUp.getText())){
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "The two passwords don't match");
+                return;
+            }
+            createUser(user, tfLastNameSignUp, tfFirstNameSignUp,  tfEmailSignUp, tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
+            showAlert(Alert.AlertType.CONFIRMATION, gridSignUp.getScene().getWindow(), "Registration Successful!", "Welcome " + tfFirstNameSignUp.getText());
+            /*
+            boolean validPhoneNumber = validPhoneNumber(tfPhoneSignUp, lblErrorPhoneNumber, gridSignUp);
+            boolean validPassword = validPassword(pfPwdSignUp, pfConfirmPwdSignUp, lblErrorPassword, gridSignUp);
+            boolean validEmail = validEmailAddress(tfEmailSignUp, lblErrorEmail, gridSignUp);
+            if(validPhoneNumber && validPassword && validEmail){
                 createUser(user, tfLastNameSignUp, tfFirstNameSignUp,  tfEmailSignUp,
                         tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
+            }else{
+                tfLastNameSignUp.clear();
+                tfFirstNameSignUp.clear();
+                tfEmailSignUp.clear();
+                tfPhoneSignUp.clear();
+                tfResidenceSignUp.clear();
+                pfPwdSignUp.clear();
+                pfConfirmPwdSignUp.clear();
             }
+             */
         });
 
         window.setScene(sceneStart);
         window.show();
     }
 
+    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(owner);
+        alert.show();
+    }
 
     public User getUserInfo(User user, TextField tfLastNameSignUp, TextField tfFirstNameSignUp, TextField tfEmailSignUp,
                             TextField tfPhoneSignUp, TextField tfResidenceSignUp, PasswordField pfPwdSignUp){
@@ -198,23 +259,11 @@ public class Main extends Application {
         }
     }
 
-    public void createUser(User user, TextField tfLastNameSignUp, TextField tfFirstNameSignUp,
-                           TextField tfEmailSignUp, TextField tfPhoneSignUp, TextField tfResidenceSignUp,
-                           PasswordField pfPwdSignUp){
+    public void createUser(User user, TextField tfLastNameSignUp, TextField tfFirstNameSignUp, TextField tfEmailSignUp,
+                           TextField tfPhoneSignUp, TextField tfResidenceSignUp, PasswordField pfPwdSignUp){
         user = getUserInfo(user, tfLastNameSignUp, tfFirstNameSignUp, tfEmailSignUp,
                 tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
         writeNewUser(user);
-    }
-
-    private boolean validPhoneNumber(TextField inputPhone, String phoneNumber,
-                                     Label lblError, GridPane gridSignUp){
-        try{
-            Integer.parseInt(inputPhone.getText());
-            return true;
-        }catch(NumberFormatException e){
-            gridSignUp.add(lblError, 2, 3);
-            return false;
-        }
     }
 
     public static void main(String[] args) throws IOException {
