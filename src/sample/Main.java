@@ -319,8 +319,9 @@ public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
         launch(args);
-        ArrayList<String> stations=new ArrayList<>();
-        Train train = new Train(stations);
+
+
+
 
     }
 }
