@@ -205,23 +205,6 @@ public class Main extends Application {
             }
             createUser(user, tfLastNameSignUp, tfFirstNameSignUp,  tfEmailSignUp, tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
             showAlert(Alert.AlertType.CONFIRMATION, gridSignUp.getScene().getWindow(), "Registration Successful!", "Welcome " + tfFirstNameSignUp.getText());
-            /*
-            boolean validPhoneNumber = validPhoneNumber(tfPhoneSignUp, lblErrorPhoneNumber, gridSignUp);
-            boolean validPassword = validPassword(pfPwdSignUp, pfConfirmPwdSignUp, lblErrorPassword, gridSignUp);
-            boolean validEmail = validEmailAddress(tfEmailSignUp, lblErrorEmail, gridSignUp);
-            if(validPhoneNumber && validPassword && validEmail){
-                createUser(user, tfLastNameSignUp, tfFirstNameSignUp,  tfEmailSignUp,
-                        tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
-            }else{
-                tfLastNameSignUp.clear();
-                tfFirstNameSignUp.clear();
-                tfEmailSignUp.clear();
-                tfPhoneSignUp.clear();
-                tfResidenceSignUp.clear();
-                pfPwdSignUp.clear();
-                pfConfirmPwdSignUp.clear();
-            }
-             */
         });
 
         window.setScene(sceneStart);
