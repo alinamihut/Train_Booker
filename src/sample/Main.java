@@ -18,11 +18,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Main extends Application {
@@ -91,7 +89,37 @@ public class Main extends Application {
 
         Scene sceneLogIn = new Scene (gridLogIn, 400, 400);
         buttonLogIn.setOnAction(e->window.setScene(sceneLogIn));
+        //if(validateLogIn(tfName,pfPassword))
 
+        //SCENE BUY TICKET 1
+        GridPane gridBuyTicket= new GridPane();
+        gridBuyTicket.setAlignment(Pos.CENTER);
+        gridBuyTicket.setHgap(10);
+        gridBuyTicket.setVgap(12);
+        Button btnGoBackHome = new Button ("Go to home page");
+        btnGoBackHome.setStyle("-fx-font-size: 12pt;");
+        btnGoBackHome.setOnAction(e-> window.setScene(sceneStart));
+        Label labelDepartureStation = new Label("Please select your departure station");
+        gridBuyTicket.add(labelDepartureStation,0,0);
+        gridBuyTicket.add(btnGoBackHome,2,5);
+        Scene buyTicket1 = new Scene (gridBuyTicket, 400, 400);
+        btnSubmit.setOnAction(e -> {
+                    if (tfName.getText().isEmpty()) {
+                        showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Please enter your email");
+                        return;
+                    }
+                    if (pfPassword.getText().isEmpty()) {
+                        showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Please enter your password");
+                        return;
+                    }
+                    if (!validateLogIn(tfName, pfPassword)) {
+                        showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Username or password not correct");
+                        return;
+                    }
+                    window.setScene(buyTicket1);
+
+
+        });
         //SCENE SIGN UP
 
         GridPane gridSignUp = new GridPane();
@@ -205,23 +233,6 @@ public class Main extends Application {
             }
             createUser(user, tfLastNameSignUp, tfFirstNameSignUp,  tfEmailSignUp, tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
             showAlert(Alert.AlertType.CONFIRMATION, gridSignUp.getScene().getWindow(), "Registration Successful!", "Welcome " + tfFirstNameSignUp.getText());
-            /*
-            boolean validPhoneNumber = validPhoneNumber(tfPhoneSignUp, lblErrorPhoneNumber, gridSignUp);
-            boolean validPassword = validPassword(pfPwdSignUp, pfConfirmPwdSignUp, lblErrorPassword, gridSignUp);
-            boolean validEmail = validEmailAddress(tfEmailSignUp, lblErrorEmail, gridSignUp);
-            if(validPhoneNumber && validPassword && validEmail){
-                createUser(user, tfLastNameSignUp, tfFirstNameSignUp,  tfEmailSignUp,
-                        tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
-            }else{
-                tfLastNameSignUp.clear();
-                tfFirstNameSignUp.clear();
-                tfEmailSignUp.clear();
-                tfPhoneSignUp.clear();
-                tfResidenceSignUp.clear();
-                pfPwdSignUp.clear();
-                pfConfirmPwdSignUp.clear();
-            }
-             */
         });
 
         window.setScene(sceneStart);
@@ -266,7 +277,50 @@ public class Main extends Application {
         writeNewUser(user);
     }
 
+    public boolean validateLogIn(TextField tfName, TextField pfPassword) {
+        try {
+            FileReader file = new FileReader("D:\\Train_Booker\\Train_Booker\\users.txt");
+            BufferedReader br = new BufferedReader(file);
+            //  Scanner myReader = new Scanner(file);
+            int line = 1;
+            boolean foundUsername = false, correctPassword = false;
+            String data = br.readLine();
+            while (data != null) {
+
+                if (line % 2 == 1) {
+                    if (tfName.getText().equals(data)) {
+                        foundUsername = true;
+                    }
+                } else {
+                    if (foundUsername) {
+                        if (pfPassword.getText().equals(data)) {
+                            correctPassword = true;
+                        }
+                    }
+                }
+                if (foundUsername && correctPassword) {
+                    return true;
+                }
+                data = br.readLine();
+                line++;
+            }
+            br.close();
+            return false;
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     public static void main(String[] args) throws IOException {
         launch(args);
+        ArrayList<String> stations=new ArrayList<>();
+        Train train=new Train(stations);
+
     }
 }

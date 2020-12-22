@@ -1,0 +1,40 @@
+Alba Iulia
+Arad
+Piteşti
+Bacău
+Oradea
+Bistriţa
+Botoşani
+Braşov
+Brăila
+Buzău
+Reşiţa
+Călăraşi
+Cluj-Napoca
+Constanţa
+Sfântu Gheorghe
+Târgovişte
+Craiova
+Galaţi
+Giurgiu
+Târgu Jiu
+Miercurea Ciuc
+Deva
+Slobozia
+Iaşi
+Baia Mare
+Drobeta Turnu Severin
+Târgu Mureş
+Piatra Neamţ
+Slatina
+Ploieşti
+Satu Mare
+Zalău
+Sibiu
+Suceava
+Alexandria
+Timişoara
+Tulcea
+Vaslui
+Râmnicu Vâlcea
+Focşani
