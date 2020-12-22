@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,8 +19,8 @@ import javafx.stage.Window;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+
 
 public class Main extends Application {
     Stage window;
@@ -65,8 +64,8 @@ public class Main extends Application {
         gridLogIn.setHgap(10);
         gridLogIn.setVgap(12);
 
-        Button btnSubmit = new Button("Submit");
-        btnSubmit.setStyle("-fx-font-size: 12pt;");
+        Button btnSubmitLogIn = new Button("Submit");
+        btnSubmitLogIn.setStyle("-fx-font-size: 12pt;");
 
         Button btnGoBackLogIn = new Button ("Go back");
         btnGoBackLogIn.setStyle("-fx-font-size: 12pt;");
@@ -79,7 +78,7 @@ public class Main extends Application {
 
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
-        hbButtons.getChildren().addAll(btnSubmit, btnGoBackLogIn);
+        hbButtons.getChildren().addAll(btnSubmitLogIn, btnGoBackLogIn);
 
         gridLogIn.add(labelUsername, 0, 0);
         gridLogIn.add(tfName, 1, 0);
@@ -89,37 +88,33 @@ public class Main extends Application {
 
         Scene sceneLogIn = new Scene (gridLogIn, 400, 400);
         buttonLogIn.setOnAction(e->window.setScene(sceneLogIn));
-        //if(validateLogIn(tfName,pfPassword))
 
-        //SCENE BUY TICKET 1
-        GridPane gridBuyTicket= new GridPane();
-        gridBuyTicket.setAlignment(Pos.CENTER);
-        gridBuyTicket.setHgap(10);
-        gridBuyTicket.setVgap(12);
-        Button btnGoBackHome = new Button ("Go to home page");
-        btnGoBackHome.setStyle("-fx-font-size: 12pt;");
-        btnGoBackHome.setOnAction(e-> window.setScene(sceneStart));
-        Label labelDepartureStation = new Label("Please select your departure station");
-        gridBuyTicket.add(labelDepartureStation,0,0);
-        gridBuyTicket.add(btnGoBackHome,2,5);
+
+        // SCENE BUY TICKET
+
+        ArrayList<String> stations = new ArrayList<>();
+        parseStationList(stations);
+
+        GridPane gridBuyTicket = new GridPane();
         Scene buyTicket1 = new Scene (gridBuyTicket, 400, 400);
-        btnSubmit.setOnAction(e -> {
-                    if (tfName.getText().isEmpty()) {
-                        showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Please enter your email");
-                        return;
-                    }
-                    if (pfPassword.getText().isEmpty()) {
-                        showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Please enter your password");
-                        return;
-                    }
-                    if (!validateLogIn(tfName, pfPassword)) {
-                        showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Username or password not correct");
-                        return;
-                    }
-                    window.setScene(buyTicket1);
+        createSceneBuyTicket(sceneStart, buyTicket1, gridBuyTicket, stations);
 
-
+        btnSubmitLogIn.setOnAction(e -> {
+            if (tfName.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Please enter your email");
+                return;
+            }
+            if (pfPassword.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Please enter your password");
+                return;
+            }
+            if (!validateLogIn(tfName, pfPassword)) {
+                showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Username or password not correct");
+                return;
+            }
+            window.setScene(buyTicket1);
         });
+
         //SCENE SIGN UP
 
         GridPane gridSignUp = new GridPane();
@@ -239,6 +234,47 @@ public class Main extends Application {
         window.show();
     }
 
+    public void createSceneBuyTicket(Scene sceneStart, Scene buyTicket1, GridPane gridBuyTicket,
+                                     ArrayList<String> stations) throws IOException {
+        //SCENE BUY TICKET 1
+
+        gridBuyTicket.setAlignment(Pos.CENTER);
+        gridBuyTicket.setHgap(10);
+        gridBuyTicket.setVgap(12);
+
+
+
+        Label labelDepartureStation = new Label("Please select your departure station");
+        gridBuyTicket.add(labelDepartureStation,0,0);
+        ComboBox cbDepartureStation = new ComboBox();
+        cbDepartureStation.getItems().addAll(stations);
+        gridBuyTicket.add(cbDepartureStation, 0, 1);
+
+        Label labelArrivalStation = new Label("Please select your arrival station");
+        gridBuyTicket.add(labelArrivalStation,0,2);
+        ComboBox cbArrivalStation = new ComboBox();
+        cbArrivalStation.getItems().addAll(stations);
+        gridBuyTicket.add(cbArrivalStation, 0, 3);
+
+        Label labelPickDate = new Label("Please pick a date for your trip");
+        gridBuyTicket.add(labelPickDate,0,4);
+        DatePicker datePicker = new DatePicker();
+        gridBuyTicket.add(datePicker, 0, 5);
+
+        Button btnSubmit = new Button("Submit");
+        btnSubmit.setStyle("-fx-font-size: 11pt;");
+
+        Button btnGoBackHome = new Button ("Go to home page");
+        btnGoBackHome.setStyle("-fx-font-size: 11pt;");
+        btnGoBackHome.setOnAction(e-> window.setScene(sceneStart));
+
+        HBox hbButtonsSignUp = new HBox();
+        hbButtonsSignUp.setSpacing(10.0);
+        hbButtonsSignUp.getChildren().addAll(btnSubmit, btnGoBackHome);
+        gridBuyTicket.add(hbButtonsSignUp, 0, 7, 7, 1);
+
+    }
+
     private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -316,12 +352,81 @@ public class Main extends Application {
         }
     }
 
+    public static void parseStationList(ArrayList<String> stations) throws IOException {
+        File file = new File("D:\\Train_Booker\\Train_Booker\\stations.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String string;
+        int i = 0;
+        while ((string = br.readLine()) != null) {
+            stations.add(string);
+            String station = stations.get(i++);
+            System.out.println(station);
+        }
+    }
+
+    public static void createTrains(ArrayList<Train> trains) {
+        try {
+            FileReader fileTrainNumbers = new FileReader("D:\\Train_Booker\\Train_Booker\\trainNumbers.txt");
+            BufferedReader br = new BufferedReader(fileTrainNumbers);
+
+            String data = br.readLine();
+
+            int line = 1;
+            int index=-1;
+            ArrayList<String> trainNumbers = new ArrayList<>();
+            Integer[] timesBetweenStations = new Integer[0];
+            ArrayList<Integer> departureTimes = new ArrayList<>();
+            String[] stations = new String[0];
+            String[] times;
+
+            while (data != null) {
+                if (line % 4 == 1) {
+                    trainNumbers.add(data);
+                    index++;
+                }
+                if (line % 4 == 2) {
+                    stations = data.split("\\*");
+                }
+                if (line % 4 == 3) {
+                    times = data.split(" ");
+                    timesBetweenStations = new Integer[times.length];
+                    for (int i = 0; i < times.length; i++) {
+                        timesBetweenStations[i] = Integer.parseInt(times[i]);
+                    }
+                }
+                if (line % 4 == 0) {
+                    departureTimes.add(Integer.parseInt(data));
+                    Train train = new Train(trainNumbers.get(index), stations, timesBetweenStations, departureTimes.get(index));
+                    trains.add(train);
+                }
+                data = br.readLine();
+                line++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void printTrains(ArrayList<Train> trains){
+        for (Train train:trains){
+            System.out.println("train number " + train.getTrainNumber());
+            for (String station: train.getStations()){
+                System.out.println(" station " + station);
+            }
+            for (Integer times: train.getTimeBetweenStations()){
+                System.out.println(" time " + times);
+            }
+            System.out.println("departure time " + train.getDepartureTime());
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         launch(args);
-
-
-
+        ArrayList<Train> trains = new ArrayList<>();
+        //ArrayList<String> stations = new ArrayList<>();
+        //parseStationList(stations);
+        //createTrains(trains);
+        //printTrains(trains);
 
     }
 }
