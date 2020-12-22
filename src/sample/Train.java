@@ -4,16 +4,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class Train {
-    private int trainNumber;
+    private String trainNumber;
     private String departureStation;
     private String arrivalStation;
     private ArrayList<String> stations = new ArrayList<>();
 
     public Train(ArrayList<String> stations) throws IOException {
-        File file = new File("D:\\Facultate\\AN 2\\SEM1\\OOP\\Train_Booker\\Train_Booker\\Train_Booker\\src\\sample\\Stations");
+        File file = new File("D:\\Train_Booker\\Train_Booker\\stations.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String string;
         int i = 0;
@@ -24,11 +25,11 @@ public class Train {
         }
     }
 
-    public int getTrainNumber() {
+    public String getTrainNumber() {
         return trainNumber;
     }
 
-    public void setTrainNumber(int trainNumber) {
+    public void setTrainNumber(String trainNumber) {
         this.trainNumber = trainNumber;
     }
 
@@ -55,4 +56,5 @@ public class Train {
     public void setStations(ArrayList<String> stations) {
         this.stations = stations;
     }
+
 }

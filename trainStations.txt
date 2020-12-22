@@ -1,0 +1,10 @@
+Satu Mare*Baia Mare*Zalău*Cluj-Napoca*Bistriţa
+90 120 70 150
+Timişoara*Arad*Deva*Alba Iulia*Sibiu*Braşov
+60 120 120 180 100
+Oradea*Zalău*Cluj-Napoca*Alba Iulia*Sibiu*Braşov
+120 70 120 180 100
+Ploieşti*Bucureşti*Slobozia*Călăraşi*Constanţa
+90 120 90 180
+Iaşi*Piatra Neamţ*Miercurea Ciuc*Sfântu Gheorghe*Braşov
+120 90 200 180
