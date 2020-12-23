@@ -159,6 +159,8 @@ public class Main extends Application {
         cbArrivalStation.getItems().addAll(stations);
         gridBuyTicket.add(cbArrivalStation, 0, 3);
 
+
+
         Label labelPickDate = new Label("Please pick a date for your trip");
         gridBuyTicket.add(labelPickDate,0,4);
         DatePicker datePicker = new DatePicker();
