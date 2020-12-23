@@ -11,12 +11,21 @@ public class Train {
     private Integer departureTime;
     private String[] stations;
     private Integer[] timeBetweenStations;
+    private Integer seats1Class;
+    private Integer seats2Class;
+    private Integer seats1SleepingClass;
+    private Integer seats2SleepingClass;
 
-    public Train (String trainNumber, String[] stations, Integer[] timeBetweenStations, Integer departureTime){
+    public Train (String trainNumber, String[] stations, Integer[] timeBetweenStations, Integer departureTime,
+                  Integer seats1Class, Integer seats2Class, Integer seats1SleepingClass, Integer seats2SleepingClass){
         this.trainNumber = trainNumber;
         this.stations = stations;
         this.timeBetweenStations = timeBetweenStations;
         this.departureTime = departureTime;
+        this.seats1Class = seats1Class;
+        this.seats2Class = seats2Class;
+        this.seats1SleepingClass = seats1SleepingClass;
+        this.seats2SleepingClass = seats2SleepingClass;
     }
 
     public String getTrainNumber() {

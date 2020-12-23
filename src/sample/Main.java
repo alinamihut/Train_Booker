@@ -59,6 +59,31 @@ public class Main extends Application {
 
         //SCENE LOG IN
 
+        ArrayList<String> stations = new ArrayList<>();
+        parseStationList(stations);
+
+        createSceneLogIn(sceneStart, stations);
+
+        //SCENE SIGN UP
+
+        User user = new User();
+        createSceneSignUp(sceneStart, user);
+
+        //admin
+        User admin = new User();
+        admin.setFirstName("John");
+        admin.setLastName("Doe");
+        admin.setEmail("admin@yahoo.com");
+        admin.setResidence("Cluj-Napoca");
+        admin.setPhoneNumber("0745689612");
+        admin.setPassword("admin");
+        //writeNewUser(admin);
+
+        window.setScene(sceneStart);
+        window.show();
+    }
+
+    public void createSceneLogIn(Scene sceneStart, ArrayList<String> stations) throws IOException {
         GridPane gridLogIn = new GridPane();
         gridLogIn.setAlignment(Pos.CENTER);
         gridLogIn.setHgap(10);
@@ -89,11 +114,7 @@ public class Main extends Application {
         Scene sceneLogIn = new Scene (gridLogIn, 400, 400);
         buttonLogIn.setOnAction(e->window.setScene(sceneLogIn));
 
-
         // SCENE BUY TICKET
-
-        ArrayList<String> stations = new ArrayList<>();
-        parseStationList(stations);
 
         GridPane gridBuyTicket = new GridPane();
         Scene buyTicket1 = new Scene (gridBuyTicket, 400, 400);
@@ -112,9 +133,51 @@ public class Main extends Application {
                 showAlert(Alert.AlertType.ERROR, gridLogIn.getScene().getWindow(), "Form Error!", "Username or password not correct");
                 return;
             }
+            tfName.clear();
+            pfPassword.clear();
             window.setScene(buyTicket1);
         });
+    }
 
+    public void createSceneBuyTicket(Scene sceneStart, Scene buyTicket1, GridPane gridBuyTicket,
+                                     ArrayList<String> stations) throws IOException {
+        //SCENE BUY TICKET 1
+
+        gridBuyTicket.setAlignment(Pos.CENTER);
+        gridBuyTicket.setHgap(10);
+        gridBuyTicket.setVgap(12);
+
+        Label labelDepartureStation = new Label("Please select your departure station");
+        gridBuyTicket.add(labelDepartureStation,0,0);
+        ComboBox cbDepartureStation = new ComboBox();
+        cbDepartureStation.getItems().addAll(stations);
+        gridBuyTicket.add(cbDepartureStation, 0, 1);
+
+        Label labelArrivalStation = new Label("Please select your arrival station");
+        gridBuyTicket.add(labelArrivalStation,0,2);
+        ComboBox cbArrivalStation = new ComboBox();
+        cbArrivalStation.getItems().addAll(stations);
+        gridBuyTicket.add(cbArrivalStation, 0, 3);
+
+        Label labelPickDate = new Label("Please pick a date for your trip");
+        gridBuyTicket.add(labelPickDate,0,4);
+        DatePicker datePicker = new DatePicker();
+        gridBuyTicket.add(datePicker, 0, 5);
+
+        Button btnSubmit = new Button("Submit");
+        btnSubmit.setStyle("-fx-font-size: 11pt;");
+
+        Button btnGoBackHome = new Button ("Go to home page");
+        btnGoBackHome.setStyle("-fx-font-size: 11pt;");
+        btnGoBackHome.setOnAction(e-> window.setScene(sceneStart));
+
+        HBox hbButtonsSignUp = new HBox();
+        hbButtonsSignUp.setSpacing(10.0);
+        hbButtonsSignUp.getChildren().addAll(btnSubmit, btnGoBackHome);
+        gridBuyTicket.add(hbButtonsSignUp, 0, 7, 7, 1);
+    }
+
+    public void createSceneSignUp(Scene sceneStart, User user){
         //SCENE SIGN UP
 
         GridPane gridSignUp = new GridPane();
@@ -168,23 +231,6 @@ public class Main extends Application {
         Scene sceneSignUp = new Scene (gridSignUp, 700, 400);
         buttonSignUp.setOnAction(e->window.setScene(sceneSignUp));
 
-
-        //admin
-        User admin = new User();
-        admin.setFirstName("John");
-        admin.setLastName("Doe");
-        admin.setEmail("admin@yahoo.com");
-        admin.setResidence("Cluj-Napoca");
-        admin.setPhoneNumber("0745689612");
-        admin.setPassword("admin");
-
-        //writeNewUser(admin);
-
-        Label lblErrorPhoneNumber = new Label("Invalid phone number!");
-        Label lblErrorPassword = new Label("Please enter the same password as above!");
-        Label lblErrorEmail = new Label("Please enter a valid email address!");
-
-        User user = new User();
         btnSubmitSignUp.setOnAction(e ->{
             if(tfFirstNameSignUp.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter your first name");
@@ -229,50 +275,6 @@ public class Main extends Application {
             createUser(user, tfLastNameSignUp, tfFirstNameSignUp,  tfEmailSignUp, tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
             showAlert(Alert.AlertType.CONFIRMATION, gridSignUp.getScene().getWindow(), "Registration Successful!", "Welcome " + tfFirstNameSignUp.getText());
         });
-
-        window.setScene(sceneStart);
-        window.show();
-    }
-
-    public void createSceneBuyTicket(Scene sceneStart, Scene buyTicket1, GridPane gridBuyTicket,
-                                     ArrayList<String> stations) throws IOException {
-        //SCENE BUY TICKET 1
-
-        gridBuyTicket.setAlignment(Pos.CENTER);
-        gridBuyTicket.setHgap(10);
-        gridBuyTicket.setVgap(12);
-
-
-
-        Label labelDepartureStation = new Label("Please select your departure station");
-        gridBuyTicket.add(labelDepartureStation,0,0);
-        ComboBox cbDepartureStation = new ComboBox();
-        cbDepartureStation.getItems().addAll(stations);
-        gridBuyTicket.add(cbDepartureStation, 0, 1);
-
-        Label labelArrivalStation = new Label("Please select your arrival station");
-        gridBuyTicket.add(labelArrivalStation,0,2);
-        ComboBox cbArrivalStation = new ComboBox();
-        cbArrivalStation.getItems().addAll(stations);
-        gridBuyTicket.add(cbArrivalStation, 0, 3);
-
-        Label labelPickDate = new Label("Please pick a date for your trip");
-        gridBuyTicket.add(labelPickDate,0,4);
-        DatePicker datePicker = new DatePicker();
-        gridBuyTicket.add(datePicker, 0, 5);
-
-        Button btnSubmit = new Button("Submit");
-        btnSubmit.setStyle("-fx-font-size: 11pt;");
-
-        Button btnGoBackHome = new Button ("Go to home page");
-        btnGoBackHome.setStyle("-fx-font-size: 11pt;");
-        btnGoBackHome.setOnAction(e-> window.setScene(sceneStart));
-
-        HBox hbButtonsSignUp = new HBox();
-        hbButtonsSignUp.setSpacing(10.0);
-        hbButtonsSignUp.getChildren().addAll(btnSubmit, btnGoBackHome);
-        gridBuyTicket.add(hbButtonsSignUp, 0, 7, 7, 1);
-
     }
 
     private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
@@ -317,12 +319,11 @@ public class Main extends Application {
         try {
             FileReader file = new FileReader("D:\\Train_Booker\\Train_Booker\\users.txt");
             BufferedReader br = new BufferedReader(file);
-            //  Scanner myReader = new Scanner(file);
+
             int line = 1;
             boolean foundUsername = false, correctPassword = false;
             String data = br.readLine();
             while (data != null) {
-
                 if (line % 2 == 1) {
                     if (tfName.getText().equals(data)) {
                         foundUsername = true;
@@ -370,7 +371,6 @@ public class Main extends Application {
             BufferedReader br = new BufferedReader(fileTrainNumbers);
 
             String data = br.readLine();
-
             int line = 1;
             int index=-1;
             ArrayList<String> trainNumbers = new ArrayList<>();
