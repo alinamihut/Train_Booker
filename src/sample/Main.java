@@ -367,7 +367,7 @@ public class Main extends Application {
 
     public static void createTrains(ArrayList<Train> trains) {
         try {
-            FileReader fileTrainNumbers = new FileReader("D:\\Train_Booker\\Train_Booker\\trainNumbers.txt");
+            FileReader fileTrainNumbers = new FileReader("D:\\Train_Booker\\Train_Booker\\trainInfo.txt");
             BufferedReader br = new BufferedReader(fileTrainNumbers);
 
             String data = br.readLine();
@@ -376,29 +376,47 @@ public class Main extends Application {
             ArrayList<String> trainNumbers = new ArrayList<>();
             Integer[] timesBetweenStations = new Integer[0];
             ArrayList<Integer> departureTimes = new ArrayList<>();
+            ArrayList<Integer> seats1Class = new ArrayList<>();
+            ArrayList<Integer> seats2Class = new ArrayList<>();
+            ArrayList<Integer> seats1SleepingClass = new ArrayList<>();
+            ArrayList<Integer> seats2SleepingClass = new ArrayList<>();
             String[] stations = new String[0];
             String[] times;
 
             while (data != null) {
-                if (line % 4 == 1) {
+                if (line % 8 == 1) {
                     trainNumbers.add(data);
                     index++;
                 }
-                if (line % 4 == 2) {
+                if (line % 8 == 2) {
                     stations = data.split("\\*");
                 }
-                if (line % 4 == 3) {
+                if (line % 8 == 3) {
                     times = data.split(" ");
                     timesBetweenStations = new Integer[times.length];
                     for (int i = 0; i < times.length; i++) {
                         timesBetweenStations[i] = Integer.parseInt(times[i]);
                     }
                 }
-                if (line % 4 == 0) {
+                if (line % 8 == 4) {
                     departureTimes.add(Integer.parseInt(data));
-                    Train train = new Train(trainNumbers.get(index), stations, timesBetweenStations, departureTimes.get(index));
+                }
+                if (line % 8 == 5) {
+                    seats1Class.add(Integer.parseInt(data));
+                }
+                if (line % 8 == 6) {
+                    seats2Class.add(Integer.parseInt(data));
+                }
+                if (line % 8 == 7) {
+                    seats1SleepingClass.add(Integer.parseInt(data));
+                }
+                if (line % 8 == 0) {
+                    seats2SleepingClass.add(Integer.parseInt(data));
+                    Train train = new Train(trainNumbers.get(index), stations, timesBetweenStations, departureTimes.get(index),
+                            seats1Class.get(index), seats2Class.get(index), seats1SleepingClass.get(index), seats2SleepingClass.get(index));
                     trains.add(train);
                 }
+
                 data = br.readLine();
                 line++;
             }
@@ -406,6 +424,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
+
 
     public static void printTrains(ArrayList<Train> trains){
         for (Train train:trains){
@@ -417,16 +436,21 @@ public class Main extends Application {
                 System.out.println(" time " + times);
             }
             System.out.println("departure time " + train.getDepartureTime());
+            System.out.println("seats first class " + train.getSeats1Class());
+            System.out.println("seats second class " + train.getSeats2Class());
+            System.out.println("seats first class sleeping class " + train.getSeats1SleepingClass());
+            System.out.println("seats second class sleeping class " + train.getSeats2SleepingClass());
+
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         launch(args);
         ArrayList<Train> trains = new ArrayList<>();
         //ArrayList<String> stations = new ArrayList<>();
         //parseStationList(stations);
-        //createTrains(trains);
-        //printTrains(trains);
+        createTrains(trains);
+        printTrains(trains);
 
     }
 }
