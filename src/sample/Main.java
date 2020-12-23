@@ -174,7 +174,12 @@ public class Main extends Application {
 
         Button btnGoBackHome = new Button("Go to home page");
         btnGoBackHome.setStyle("-fx-font-size: 11pt;");
-        btnGoBackHome.setOnAction(e -> window.setScene(sceneStart));
+        btnGoBackHome.setOnAction(e -> {
+            cbDepartureStation.getSelectionModel().clearSelection();
+            cbArrivalStation.getSelectionModel().clearSelection();
+            datePicker.setValue(null);
+            window.setScene(sceneStart);
+        });
 
         HBox hbButtonsSignUp = new HBox();
         hbButtonsSignUp.setSpacing(10.0);
@@ -201,7 +206,6 @@ public class Main extends Application {
             }
 
             if (datePicker.getValue().isBefore(LocalDate.now())) {
-
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "Select a valid date");
                 return;
             }
@@ -211,12 +215,9 @@ public class Main extends Application {
             }
             cbDepartureStation.getSelectionModel().clearSelection();
             cbArrivalStation.getSelectionModel().clearSelection();
-            datePicker.getValue().get(null);
+            datePicker.setValue(null);
             window.setScene(sceneTripOptions);
-
-
         });
-
     }
     public void createSceneTripOptions(Scene sceneStart, Scene buyTicket1, ArrayList<Trip> tripOptions, Scene sceneTripOptions, GridPane gridTripOptions){
 
