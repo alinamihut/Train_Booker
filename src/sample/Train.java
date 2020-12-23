@@ -30,7 +30,7 @@ public class Train {
         return trainNumber;
     }
 
-    public int getDepartureTime() {
+    public Integer getDepartureTime() {
         return departureTime;
     }
 
