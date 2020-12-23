@@ -2,13 +2,13 @@ package sample;
 
 public class Trip {
     private String trainNumber;
-    private Integer departureTime;
-    private Integer arrivalTime;
-    private Integer tripLength;
+    private String departureTime;
+    private String arrivalTime;
+    private String tripLength;
     private String departureStation;
     private String arrivalStation;
 
-    public Trip(String trainNumber, Integer departureTime, Integer arrivalTime, Integer tripLength, String departureStation, String arrivalStation) {
+    public Trip(String trainNumber, String departureTime, String arrivalTime, String tripLength, String departureStation, String arrivalStation) {
         this.trainNumber = trainNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -21,15 +21,15 @@ public class Trip {
         return trainNumber;
     }
 
-    public Integer getDepartureTime() {
+    public String getDepartureTime() {
         return departureTime;
     }
 
-    public Integer getArrivalTime() {
+    public String getArrivalTime() {
         return arrivalTime;
     }
 
-    public Integer getTripLength() {
+    public String getTripLength() {
         return tripLength;
     }
 
