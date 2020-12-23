@@ -218,8 +218,6 @@ public class Main extends Application {
             cbArrivalStation.getSelectionModel().clearSelection();
             datePicker.setValue(null);
             window.setScene(sceneTripOptions);
-
-
         });
 
     }
