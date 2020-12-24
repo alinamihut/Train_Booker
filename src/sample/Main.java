@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 public class Main extends Application {
     Stage window;
     Button buttonLogIn, buttonSignUp;
-    Label labelWelcome;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -33,8 +31,12 @@ public class Main extends Application {
         primaryStage.setTitle("Train Booker");
 
         window = primaryStage;
+
         ArrayList<Train> trains = new ArrayList<>();
         createTrains(trains);
+        ArrayList<String> stations = new ArrayList<>();
+        parseStationList(stations);
+
         // FIRST SCENE
 
         BorderPane layoutStart = new BorderPane();
@@ -45,32 +47,33 @@ public class Main extends Application {
         buttonLogIn = new Button("Log In");
         buttonLogIn.setMaxWidth(Double.MAX_VALUE);
 
-        labelWelcome = new Label("Welcome to Train Booker!");
+        Label labelWelcome = new Label("Welcome to Train Booker!");
         final double MAX_FONT_SIZE = 27.0;
         labelWelcome.setFont(new Font(MAX_FONT_SIZE));
 
         VBox layoutStartButtons = new VBox();
         layoutStartButtons.setSpacing(10);
         layoutStartButtons.setPadding(new Insets(0, 20, 10, 20));
-
         layoutStartButtons.getChildren().addAll(buttonLogIn, buttonSignUp);
+
         layoutStart.setBottom(layoutStartButtons);
         layoutStart.setCenter(labelWelcome);
         Scene sceneStart = new Scene(layoutStart, 400, 400);
 
         //SCENE LOG IN
 
-        ArrayList<String> stations = new ArrayList<>();
-        parseStationList(stations);
-
         GridPane gridLogIn = new GridPane();
         Scene sceneLogIn = new Scene(gridLogIn, 400, 400);
-        createSceneLogIn(sceneStart, stations, gridLogIn, sceneLogIn, trains);
+        createSceneLogIn(sceneStart, stations, gridLogIn, trains);
+        buttonLogIn.setOnAction(e -> window.setScene(sceneLogIn));
 
         //SCENE SIGN UP
 
         User user = new User();
-        createSceneSignUp(sceneStart, sceneLogIn, user);
+        GridPane gridSignUp = new GridPane();
+        Scene sceneSignUp = new Scene(gridSignUp, 700, 400);
+        createSceneSignUp(sceneStart, sceneLogIn, user, gridSignUp);
+        buttonSignUp.setOnAction(e -> window.setScene(sceneSignUp));
 
         //admin
         User admin = new User();
@@ -86,8 +89,7 @@ public class Main extends Application {
         window.show();
     }
 
-    public void createSceneLogIn(Scene sceneStart, ArrayList<String> stations, GridPane gridLogIn,
-                                 Scene sceneLogIn, ArrayList<Train> trains) throws IOException {
+    public void createSceneLogIn(Scene sceneStart, ArrayList<String> stations, GridPane gridLogIn, ArrayList<Train> trains) throws IOException {
         gridLogIn.setAlignment(Pos.CENTER);
         gridLogIn.setHgap(10);
         gridLogIn.setVgap(12);
@@ -114,14 +116,11 @@ public class Main extends Application {
         gridLogIn.add(pfPassword, 1, 1);
         gridLogIn.add(hbButtons, 0, 2, 2, 1);
 
-
-        buttonLogIn.setOnAction(e -> window.setScene(sceneLogIn));
-
         // SCENE BUY TICKET
 
         GridPane gridBuyTicket = new GridPane();
-        Scene buyTicket1 = new Scene(gridBuyTicket, 400, 400);
-        createSceneBuyTicket(sceneStart, buyTicket1, gridBuyTicket, stations, trains);
+        Scene sceneBuyTicket = new Scene(gridBuyTicket, 400, 400);
+        createSceneBuyTicket(sceneStart, sceneBuyTicket, gridBuyTicket, stations, trains);
 
         btnSubmitLogIn.setOnAction(e -> {
             if (tfName.getText().isEmpty()) {
@@ -138,14 +137,12 @@ public class Main extends Application {
             }
             tfName.clear();
             pfPassword.clear();
-            window.setScene(buyTicket1);
+            window.setScene(sceneBuyTicket);
         });
     }
 
-    public void createSceneBuyTicket(Scene sceneStart, Scene buyTicket1, GridPane gridBuyTicket,
+    public void createSceneBuyTicket(Scene sceneStart, Scene buyTicket, GridPane gridBuyTicket,
                                      ArrayList<String> stations, ArrayList<Train> trains) throws IOException {
-        //SCENE BUY TICKET 1
-
         gridBuyTicket.setAlignment(Pos.CENTER);
         gridBuyTicket.setHgap(10);
         gridBuyTicket.setVgap(12);
@@ -183,10 +180,11 @@ public class Main extends Application {
         hbButtonsSignUp.setSpacing(10.0);
         hbButtonsSignUp.getChildren().addAll(btnSubmit, btnGoBackHome);
         gridBuyTicket.add(hbButtonsSignUp, 0, 7, 7, 1);
+
         ArrayList<Trip> tripOptions = new ArrayList<>();
 
         GridPane gridTripOptions = new GridPane();
-        Scene sceneTripOptions= new Scene(gridTripOptions, 680, 400);
+        Scene sceneTripOptions = new Scene(gridTripOptions, 680, 400);
 
         btnSubmit.setOnAction(e -> {
             if (cbDepartureStation.getSelectionModel().isEmpty()) {
@@ -206,11 +204,11 @@ public class Main extends Application {
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "Select a valid date");
                 return;
             }
-            if(!findTripOptions(cbDepartureStation, cbArrivalStation, trains,tripOptions)){
+            if(!findTripOptions(cbDepartureStation, cbArrivalStation, trains, tripOptions)){
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "There aren't any train options available");
                 return;
             }
-            createSceneTripOptions(sceneStart, buyTicket1, tripOptions, sceneTripOptions, gridTripOptions);
+            createSceneTripOptions(sceneStart, buyTicket, tripOptions, sceneTripOptions, gridTripOptions, trains);
             cbDepartureStation.getSelectionModel().clearSelection();
             cbArrivalStation.getSelectionModel().clearSelection();
             datePicker.setValue(null);
@@ -218,7 +216,8 @@ public class Main extends Application {
         });
     }
 
-    public void createSceneTripOptions(Scene sceneStart, Scene buyTicket1, ArrayList<Trip> tripOptions, Scene sceneTripOptions, GridPane gridTripOptions){
+    public void createSceneTripOptions(Scene sceneStart, Scene buyTicket, ArrayList<Trip> tripOptions,
+                                       Scene sceneTripOptions, GridPane gridTripOptions,  ArrayList<Train> trains){
         TableView<Trip> table = new TableView<Trip>();
 
         gridTripOptions.setAlignment(Pos.CENTER_LEFT);
@@ -232,26 +231,21 @@ public class Main extends Application {
 
         TableColumn colTrainNumber = new TableColumn("Train");
         colTrainNumber.setMinWidth(100);
-        colTrainNumber.setCellValueFactory(
-                new PropertyValueFactory<Trip, String>("trainNumber"));
+        colTrainNumber.setCellValueFactory(new PropertyValueFactory<Trip, String>("trainNumber"));
 
         TableColumn colDepartureTime = new TableColumn("Departure time");
         colDepartureTime.setMinWidth(100);
-        colDepartureTime.setCellValueFactory(
-                new PropertyValueFactory<Trip, String>("departureTime"));
+        colDepartureTime.setCellValueFactory(new PropertyValueFactory<Trip, String>("departureTime"));
 
         TableColumn colArrivalTime = new TableColumn("Arrival time");
         colArrivalTime.setMinWidth(100);
-        colArrivalTime.setCellValueFactory(
-                new PropertyValueFactory<Trip, String>("arrivalTime"));
+        colArrivalTime.setCellValueFactory(new PropertyValueFactory<Trip, String>("arrivalTime"));
 
         TableColumn colTripLength = new TableColumn("Trip length");
         colTripLength.setMinWidth(100);
-        colTripLength.setCellValueFactory(
-                new PropertyValueFactory<Trip, String>("tripLength"));
+        colTripLength.setCellValueFactory(new PropertyValueFactory<Trip, String>("tripLength"));
 
         table.getColumns().addAll(colTrainNumber, colDepartureTime, colArrivalTime, colTripLength);
-
         for(Trip trip: tripOptions){
             table.getItems().add(trip);
         }
@@ -264,16 +258,21 @@ public class Main extends Application {
 
         Button btnGoBackBuyTicket = new Button("Go to previous page");
         btnGoBackBuyTicket.setStyle("-fx-font-size: 12pt;");
-        btnGoBackBuyTicket.setOnAction(e -> window.setScene(buyTicket1));
+        btnGoBackBuyTicket.setOnAction(e -> window.setScene(buyTicket));
 
         Button btnGoToHomePage = new Button("Go to home page");
         btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
         btnGoToHomePage.setOnAction(e -> window.setScene(sceneStart));
 
+        HBox hbButtons = new HBox();
+        hbButtons.setSpacing(10.0);
+        hbButtons.getChildren().addAll(btnGoBackBuyTicket, btnGoToHomePage);
+        gridTripOptions.add(hbButtons, 0, 2, 2, 1);
+
         Label labelSelectOption = new Label("Select your option");
         labelSelectOption.setStyle("-fx-font-size: 11pt;");
-        ComboBox cbSelectOption = new ComboBox();
 
+        ComboBox cbSelectOption = new ComboBox();
         for(Trip trip: tripOptions){
             cbSelectOption.getItems().add(trip.getTrainNumber());
         }
@@ -281,28 +280,125 @@ public class Main extends Application {
         Button btnSubmit = new Button("Submit");
         btnSubmit.setStyle("-fx-font-size: 12pt;");
 
-
         VBox vBoxSelectOption = new VBox();
         vBoxSelectOption.setSpacing(10);
         vBoxSelectOption.setPadding(new Insets(10, 20, 10, 10));
         vBoxSelectOption.getChildren().addAll(labelSelectOption, cbSelectOption, btnSubmit);
         gridTripOptions.add(vBoxSelectOption, 1, 0);
 
-        HBox hbButtons = new HBox();
-        hbButtons.setSpacing(10.0);
-        hbButtons.getChildren().addAll(btnGoBackBuyTicket, btnGoToHomePage);
-        gridTripOptions.add(hbButtons, 0, 2, 2, 1);
-
         GridPane gridTicketDetails = new GridPane();
         Scene sceneTicketDetails = new Scene(gridTicketDetails, 680, 400);
-        btnSubmit.setOnAction(e -> window.setScene(sceneTicketDetails));
-
+        btnSubmit.setOnAction(e -> {
+            createSceneTicketDetails(sceneStart, sceneTripOptions, gridTicketDetails, trains, cbSelectOption);
+            window.setScene(sceneTicketDetails);
+        });
     }
 
-    public void createSceneSignUp(Scene sceneStart, Scene sceneLogIn, User user) {
-        //SCENE SIGN UP
+    public void createSceneTicketDetails(Scene sceneStart, Scene sceneTripOptions, GridPane gridTicketDetails,
+                                         ArrayList<Train> trains, ComboBox cbSelectOption){
+        gridTicketDetails.setAlignment(Pos.CENTER_LEFT);
+        gridTicketDetails.setHgap(10);
+        gridTicketDetails.setVgap(12);
+        gridTicketDetails.setPadding(new Insets(30));
 
-        GridPane gridSignUp = new GridPane();
+        Label labelNumberOfTickets = new Label("Select number of tickets");
+        TextField tfNumberOfTickets = new TextField();
+
+        Label labelClass = new Label("Select the class");
+        ComboBox cbClass = new ComboBox();
+        cbClass.getItems().addAll("first class", "second class", "first class sleeping wagon", "second class sleeping wagon");
+
+        Button btnGoBackTripOptions = new Button("Go to previous page");
+        btnGoBackTripOptions.setStyle("-fx-font-size: 12pt;");
+        btnGoBackTripOptions.setOnAction(e -> window.setScene(sceneTripOptions));
+
+        Button btnGoToHomePage = new Button("Go to home page");
+        btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
+        btnGoToHomePage.setOnAction(e -> window.setScene(sceneStart));
+
+        HBox hbButtons = new HBox();
+        hbButtons.setSpacing(10.0);
+        hbButtons.getChildren().addAll(btnGoBackTripOptions, btnGoToHomePage);
+
+        Button btnSubmit = new Button("Submit");
+        btnSubmit.setStyle("-fx-font-size: 12pt;");
+
+        gridTicketDetails.add(labelNumberOfTickets, 0, 0);
+        gridTicketDetails.add(tfNumberOfTickets, 0, 1);
+        gridTicketDetails.add(labelClass, 0, 2);
+        gridTicketDetails.add(cbClass, 0, 3);
+        gridTicketDetails.add(hbButtons, 0, 4, 4, 1);
+        gridTicketDetails.add(btnSubmit, 1, 0);
+
+        btnSubmit.setOnAction(e -> {
+            if (tfNumberOfTickets.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!", "Please enter number of tickets");
+                return;
+            }
+            if (cbClass.getSelectionModel().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!", "Please select a class");
+                return;
+            }
+            manageSeats(cbClass, trains, cbSelectOption,tfNumberOfTickets, gridTicketDetails);
+        });
+    }
+
+    public void manageSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets,
+                            GridPane gridTicketDetails){
+        String selectedTrainOption = (String) cbSelectOption.getValue();
+        String selectedClass = (String) cbClass.getValue();
+
+        for (Train train : trains) {
+            if(train.getTrainNumber().equals(selectedTrainOption)){
+                switch (selectedClass) {
+                    case "first class" -> {
+                        if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats1Class()){
+                            train.setSeats1Class(train.getSeats1Class() - Integer.parseInt(tfNumberOfTickets.getText()));
+                        }else{
+                            showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
+                                    "There are only " + train.getSeats1Class().toString() + " seats left at the specified class");
+                            return;
+                        }
+                    }
+                    case "second class" -> {
+                        if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats2Class()){
+                            train.setSeats2Class(train.getSeats2Class() - Integer.parseInt(tfNumberOfTickets.getText()));
+                        }else{
+                            showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
+                                    "There are only " + train.getSeats2Class().toString() + " seats left at the specified class");
+                            return;
+                        }
+
+                    }
+                    case "first class sleeping wagon" -> {
+                        if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats1SleepingClass()){
+                            train.setSeats1SleepingClass(train.getSeats1SleepingClass() - Integer.parseInt(tfNumberOfTickets.getText()));
+                        }else{
+                            showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
+                                    "There are only " + train.getSeats1SleepingClass().toString() + " seats left at the specified class");
+                            return;
+                        }
+                    }
+                    case "second class sleeping wagon" -> {
+                        if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats2SleepingClass()){
+                            train.setSeats2SleepingClass(train.getSeats2SleepingClass() - Integer.parseInt(tfNumberOfTickets.getText()));
+                        }else{
+                            showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
+                                    "There are only " + train.getSeats2SleepingClass().toString() + " seats left at the specified class");
+                            return;
+                        }
+                    }
+                }
+                System.out.println("train number " + train.getTrainNumber());
+                System.out.println("seats first class " + train.getSeats1Class());
+                System.out.println("seats second class " + train.getSeats2Class());
+                System.out.println("seats first class sleeping class " + train.getSeats1SleepingClass());
+                System.out.println("seats second class sleeping class " + train.getSeats2SleepingClass());
+            }
+        }
+    }
+
+    public void createSceneSignUp(Scene sceneStart, Scene sceneLogIn, User user, GridPane gridSignUp) {
         gridSignUp.setAlignment(Pos.CENTER_LEFT);
         gridSignUp.setHgap(10);
         gridSignUp.setVgap(12);
@@ -359,9 +455,6 @@ public class Main extends Application {
         gridSignUp.add(pfConfirmPwdSignUp, 1, 6);
         gridSignUp.add(hbButtonsSignUp, 0, 7, 7, 1);
 
-        Scene sceneSignUp = new Scene(gridSignUp, 700, 400);
-        buttonSignUp.setOnAction(e -> window.setScene(sceneSignUp));
-
         btnSubmitSignUp.setOnAction(e -> {
             if (tfFirstNameSignUp.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Please enter your first name");
@@ -401,6 +494,10 @@ public class Main extends Application {
             }
             if (!pfPwdSignUp.getText().equals(pfConfirmPwdSignUp.getText())) {
                 showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "The two passwords don't match");
+                return;
+            }
+            if(pfPwdSignUp.getLength() < 6){
+                showAlert(Alert.AlertType.ERROR, gridSignUp.getScene().getWindow(), "Form Error!", "Your password must have at least 6 characters");
                 return;
             }
             createUser(user, tfLastNameSignUp, tfFirstNameSignUp, tfEmailSignUp, tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
@@ -646,7 +743,7 @@ public class Main extends Application {
         ArrayList<Train> trains = new ArrayList<>();
         //ArrayList<String> stations = new ArrayList<>();
         //parseStationList(stations);
-       //createTrains(trains);
+        //createTrains(trains);
         //printTrains(trains);
 
     }
