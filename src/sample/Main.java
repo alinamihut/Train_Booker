@@ -740,7 +740,7 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        ArrayList<Train> trains = new ArrayList<>();
+        //ArrayList<Train> trains = new ArrayList<>();
         //ArrayList<String> stations = new ArrayList<>();
         //parseStationList(stations);
         //createTrains(trains);
