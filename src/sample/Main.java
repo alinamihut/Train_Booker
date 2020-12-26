@@ -7,6 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -16,9 +19,15 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Main extends Application {
@@ -308,6 +317,10 @@ public class Main extends Application {
         ComboBox cbClass = new ComboBox();
         cbClass.getItems().addAll("first class", "second class", "first class sleeping wagon", "second class sleeping wagon");
 
+        Label labelStatus = new Label("Select your status");
+        ComboBox cbStatus = new ComboBox();
+        cbStatus.getItems().addAll("regular adult", "child(less than 6 years old)", "pupil", "student", "retired person");
+
         Button btnGoBackTripOptions = new Button("Go to previous page");
         btnGoBackTripOptions.setStyle("-fx-font-size: 12pt;");
         btnGoBackTripOptions.setOnAction(e -> window.setScene(sceneTripOptions));
@@ -327,7 +340,9 @@ public class Main extends Application {
         gridTicketDetails.add(tfNumberOfTickets, 0, 1);
         gridTicketDetails.add(labelClass, 0, 2);
         gridTicketDetails.add(cbClass, 0, 3);
-        gridTicketDetails.add(hbButtons, 0, 4, 4, 1);
+        gridTicketDetails.add(labelStatus, 0, 4);
+        gridTicketDetails.add(cbStatus, 0, 5);
+        gridTicketDetails.add(hbButtons, 0, 6, 6, 1);
         gridTicketDetails.add(btnSubmit, 1, 0);
 
         btnSubmit.setOnAction(e -> {
@@ -339,9 +354,15 @@ public class Main extends Application {
                 showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!", "Please select a class");
                 return;
             }
+            if (cbStatus.getSelectionModel().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!", "Please select a status");
+                return;
+            }
             manageSeats(cbClass, trains, cbSelectOption,tfNumberOfTickets, gridTicketDetails);
         });
     }
+
+
 
     public void manageSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets,
                             GridPane gridTicketDetails){
@@ -354,6 +375,7 @@ public class Main extends Application {
                     case "first class" -> {
                         if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats1Class()){
                             train.setSeats1Class(train.getSeats1Class() - Integer.parseInt(tfNumberOfTickets.getText()));
+                            updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
                         }else{
                             showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
                                     "There are only " + train.getSeats1Class().toString() + " seats left at the specified class");
@@ -363,6 +385,7 @@ public class Main extends Application {
                     case "second class" -> {
                         if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats2Class()){
                             train.setSeats2Class(train.getSeats2Class() - Integer.parseInt(tfNumberOfTickets.getText()));
+                            updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
                         }else{
                             showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
                                     "There are only " + train.getSeats2Class().toString() + " seats left at the specified class");
@@ -373,6 +396,7 @@ public class Main extends Application {
                     case "first class sleeping wagon" -> {
                         if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats1SleepingClass()){
                             train.setSeats1SleepingClass(train.getSeats1SleepingClass() - Integer.parseInt(tfNumberOfTickets.getText()));
+                            updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
                         }else{
                             showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
                                     "There are only " + train.getSeats1SleepingClass().toString() + " seats left at the specified class");
@@ -382,6 +406,7 @@ public class Main extends Application {
                     case "second class sleeping wagon" -> {
                         if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats2SleepingClass()){
                             train.setSeats2SleepingClass(train.getSeats2SleepingClass() - Integer.parseInt(tfNumberOfTickets.getText()));
+                            updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
                         }else{
                             showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
                                     "There are only " + train.getSeats2SleepingClass().toString() + " seats left at the specified class");
@@ -396,6 +421,56 @@ public class Main extends Application {
                 System.out.println("seats second class sleeping class " + train.getSeats2SleepingClass());
             }
         }
+    }
+
+    public void updateSeatsTrainInfo(String selectedTrainOption, String selectedClass, TextField tfNumberOfTickets){
+        try {
+            FileReader fileTrainNumbers = new FileReader("D:\\Train_Booker\\Train_Booker\\trainInfo.txt");
+            BufferedReader br = new BufferedReader(fileTrainNumbers);
+            StringBuffer inputBuffer = new StringBuffer();
+            Integer nrOfTickets = Integer.parseInt(tfNumberOfTickets.getText());
+            String data = br.readLine();
+
+            int line = 1;
+            int lineClass = 0;
+            while(data != null) {
+                if (line % 8 == 1) {
+                    if (data.equals(selectedTrainOption)) {
+                        lineClass = line + getIndexForSelectedClass(selectedClass);
+                    }
+                }
+                if(line != lineClass){
+                    inputBuffer.append(data);
+                    inputBuffer.append('\n');
+                }else{
+                    Integer difference = Integer.parseInt(data) - nrOfTickets;
+                    inputBuffer.append(difference.toString());
+                    inputBuffer.append('\n');
+                }
+                data = br.readLine();
+                line++;
+            }
+            String inputStr = inputBuffer.toString();
+            System.out.println(inputStr);
+            fileTrainNumbers.close();
+
+            FileOutputStream fileOut = new FileOutputStream("D:\\Train_Booker\\Train_Booker\\trainInfo.txt");
+            fileOut.write(inputStr.getBytes());
+            fileOut.close();
+
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Integer getIndexForSelectedClass(String selectedClass) {
+        return switch (selectedClass) {
+            case "first class" -> 4;
+            case "second class" -> 5;
+            case "first class sleeping wagon" -> 6;
+            case "second class sleeping wagon" -> 7;
+            default -> -1;
+        };
     }
 
     public void createSceneSignUp(Scene sceneStart, Scene sceneLogIn, User user, GridPane gridSignUp) {
