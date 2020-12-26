@@ -363,7 +363,6 @@ public class Main extends Application {
     }
 
 
-
     public void manageSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets,
                             GridPane gridTicketDetails){
         String selectedTrainOption = (String) cbSelectOption.getValue();
