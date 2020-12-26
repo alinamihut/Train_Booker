@@ -1,8 +1,7 @@
 Alba Iulia
+Alexandria
 Arad
-Piteşti
 Bacău
-Oradea
 Bistriţa
 Botoşani
 Braşov
@@ -12,27 +11,30 @@ Reşiţa
 Călăraşi
 Cluj-Napoca
 Constanţa
-Sfântu Gheorghe
-Târgovişte
 Craiova
+Deva
+Drobeta Turnu Severin
 Galaţi
 Giurgiu
-Târgu Jiu
+
 Miercurea Ciuc
-Deva
+
 Slobozia
 Iaşi
 Baia Mare
-Drobeta Turnu Severin
-Târgu Mureş
 Piatra Neamţ
+Sfântu Gheorghe
 Slatina
+Oradea
+Piteşti
 Ploieşti
 Satu Mare
 Zalău
 Sibiu
 Suceava
-Alexandria
+Târgovişte
+Târgu Mureş
+Târgu Jiu
 Timişoara
 Tulcea
 Vaslui

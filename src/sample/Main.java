@@ -298,13 +298,13 @@ public class Main extends Application {
         GridPane gridTicketDetails = new GridPane();
         Scene sceneTicketDetails = new Scene(gridTicketDetails, 680, 400);
         btnSubmit.setOnAction(e -> {
-            createSceneTicketDetails(sceneStart, sceneTripOptions, gridTicketDetails, trains, cbSelectOption);
+            createSceneTicketDetails(sceneStart, sceneTripOptions, sceneTicketDetails, gridTicketDetails, trains,tripOptions, cbSelectOption);
             window.setScene(sceneTicketDetails);
         });
     }
 
-    public void createSceneTicketDetails(Scene sceneStart, Scene sceneTripOptions, GridPane gridTicketDetails,
-                                         ArrayList<Train> trains, ComboBox cbSelectOption){
+    public void createSceneTicketDetails(Scene sceneStart, Scene sceneTripOptions, Scene sceneTicketDetails, GridPane gridTicketDetails,
+                                         ArrayList<Train> trains,ArrayList<Trip> tripOptions, ComboBox cbSelectOption){
         gridTicketDetails.setAlignment(Pos.CENTER_LEFT);
         gridTicketDetails.setHgap(10);
         gridTicketDetails.setVgap(12);
@@ -345,6 +345,8 @@ public class Main extends Application {
         gridTicketDetails.add(hbButtons, 0, 6, 6, 1);
         gridTicketDetails.add(btnSubmit, 1, 0);
 
+        GridPane gridTicketInfoandPrice = new GridPane();
+        Scene sceneTicketInfoandPrice = new Scene(gridTicketInfoandPrice, 750, 600);
         btnSubmit.setOnAction(e -> {
             if (tfNumberOfTickets.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!", "Please enter number of tickets");
@@ -358,10 +360,82 @@ public class Main extends Application {
                 showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!", "Please select a status");
                 return;
             }
+            createSceneTicketInfoandPrice(sceneStart,sceneTicketDetails,tfNumberOfTickets, cbClass, cbStatus, tripOptions, cbSelectOption, gridTicketInfoandPrice, trains);
+            window.setScene(sceneTicketInfoandPrice);
             manageSeats(cbClass, trains, cbSelectOption,tfNumberOfTickets, gridTicketDetails);
         });
     }
 
+    public void createSceneTicketInfoandPrice (Scene sceneStart, Scene sceneTicketDetails, TextField tfNumberOfTickets, ComboBox cbClass,
+                                               ComboBox cbStatus, ArrayList<Trip> tripOptions, ComboBox cbSelectOption, GridPane gridTicketInfoandPrice, ArrayList<Train> trains){
+        Trip selectedTrip =new Trip(tripOptions.get(0).getTrainNumber(),tripOptions.get(0).getDepartureTime(), tripOptions.get(0).getArrivalTime(),
+                tripOptions.get(0).getTripLength(), tripOptions.get(0).getDepartureStation(),tripOptions.get(0).getArrivalStation());
+        for (Trip trip:tripOptions){
+            if(trip.getTrainNumber().equals(cbSelectOption.getValue())){
+                selectedTrip= new Trip(trip.getTrainNumber(),trip.getDepartureTime(), trip.getArrivalTime(), trip.getTripLength(), trip.getDepartureStation(),
+                                    trip.getArrivalStation());
+            }
+        }
+        gridTicketInfoandPrice.setAlignment(Pos.CENTER_LEFT);
+        gridTicketInfoandPrice.setHgap(10);
+        gridTicketInfoandPrice.setVgap(12);
+        gridTicketInfoandPrice.setPadding(new Insets(30));
+
+        Label labelTitle = new Label("Your trip details");
+        labelTitle.setStyle("-fx-font-size: 20pt;");
+        Label labelTrainNumber= new Label("Train number: " + selectedTrip.getTrainNumber());
+        labelTrainNumber.setStyle("-fx-font-size: 12pt;");
+        Label labelDepartureStation= new Label("Departure station: " + selectedTrip.getDepartureStation());
+        labelDepartureStation.setStyle("-fx-font-size: 12pt;");
+        Label labelArrivalStation= new Label("Arrival station: " + selectedTrip.getArrivalStation());
+        labelArrivalStation.setStyle("-fx-font-size: 12pt;");
+        Label labelDepartureTime= new Label("Departure time: " + selectedTrip.getDepartureTime());
+        labelDepartureTime.setStyle("-fx-font-size: 12pt;");
+        Label labelArrivalTime= new Label("Arrival time: " + selectedTrip.getArrivalTime());
+        labelArrivalTime.setStyle("-fx-font-size: 12pt;");
+        Label labelTripLength= new Label("Trip length: " + selectedTrip.getTripLength());
+        labelTripLength.setStyle("-fx-font-size: 12pt;");
+
+        Label labelNrOfTickets=new Label("Number of tickets: " + tfNumberOfTickets.getText());
+        labelNrOfTickets.setStyle("-fx-font-size: 12pt;");
+        Label labelClass=new Label("Class: " + cbClass.getValue());
+        labelClass.setStyle("-fx-font-size: 12pt;");
+        Label labelStatus=new Label("Status of the traveler(s): " + cbStatus.getValue());
+        labelStatus.setStyle("-fx-font-size: 12pt;");
+
+        gridTicketInfoandPrice.add(labelTitle, 0, 0 );
+        gridTicketInfoandPrice.add(labelTrainNumber, 0, 1 );
+        gridTicketInfoandPrice.add(labelDepartureStation, 0, 2 );
+        gridTicketInfoandPrice.add(labelArrivalStation, 0, 3 );
+        gridTicketInfoandPrice.add(labelDepartureTime, 1,2 );
+        gridTicketInfoandPrice.add(labelArrivalTime, 1,3 );
+        gridTicketInfoandPrice.add(labelTripLength, 0, 4 );
+        gridTicketInfoandPrice.add(labelNrOfTickets, 0, 5 );
+        gridTicketInfoandPrice.add(labelClass, 0, 6 );
+        gridTicketInfoandPrice.add(labelStatus, 0, 7 );
+
+        Label labelConfirmPurchase= new Label("Comfirm purchase?");
+        labelConfirmPurchase.setStyle("-fx-font-size: 12pt;");
+        gridTicketInfoandPrice.add(labelConfirmPurchase, 0, 8 );
+
+        Button btnGoBackTripOptions = new Button("Go to previous page");
+        btnGoBackTripOptions.setStyle("-fx-font-size: 12pt;");
+        btnGoBackTripOptions.setOnAction(e -> window.setScene(sceneTicketDetails));
+
+        Button btnConfirm = new Button("Yes");
+        btnConfirm.setStyle("-fx-font-size: 12pt;");
+        Trip finalSelectedTrip = selectedTrip;
+        btnConfirm.setOnAction(e ->{ window.setScene(sceneStart);
+        //manageSeats(cbClass,trains,cbSelectOption,tfNumberOfTickets,gridTicket);
+            updateSeatsTrainInfo(finalSelectedTrip.getTrainNumber(),cbClass.getValue().toString(),tfNumberOfTickets);
+        });
+
+        HBox hbButtons = new HBox();
+        hbButtons.setSpacing(10.0);
+        hbButtons.getChildren().addAll(btnConfirm,btnGoBackTripOptions);
+        gridTicketInfoandPrice.add(hbButtons, 0,9);
+
+    }
 
     public void manageSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets,
                             GridPane gridTicketDetails){
@@ -471,6 +545,7 @@ public class Main extends Application {
             default -> -1;
         };
     }
+
 
     public void createSceneSignUp(Scene sceneStart, Scene sceneLogIn, User user, GridPane gridSignUp) {
         gridSignUp.setAlignment(Pos.CENTER_LEFT);
