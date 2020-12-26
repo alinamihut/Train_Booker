@@ -18,7 +18,7 @@ IR1366
 Oradea*Zalău*Cluj-Napoca*Alba Iulia*Sibiu*Braşov*
 120 70 120 180 100
 120
-10
+6
 60
 20
 80
