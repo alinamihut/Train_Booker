@@ -11,10 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -34,8 +31,7 @@ public class Main extends Application {
 
         window = primaryStage;
 
-        ArrayList<Train> trains = new ArrayList<>();
-        createTrains(trains);
+
         ArrayList<String> stations = new ArrayList<>();
         parseStationList(stations);
 
@@ -66,7 +62,7 @@ public class Main extends Application {
 
         GridPane gridLogIn = new GridPane();
         Scene sceneLogIn = new Scene(gridLogIn, 400, 400);
-        createSceneLogIn(sceneStart, stations, gridLogIn, trains);
+        createSceneLogIn(sceneStart, stations, gridLogIn);
         buttonLogIn.setOnAction(e -> window.setScene(sceneLogIn));
 
         //SCENE SIGN UP
@@ -91,7 +87,7 @@ public class Main extends Application {
         window.show();
     }
 
-    public void createSceneLogIn(Scene sceneStart, ArrayList<String> stations, GridPane gridLogIn, ArrayList<Train> trains) throws IOException {
+    public void createSceneLogIn(Scene sceneStart, ArrayList<String> stations, GridPane gridLogIn) throws IOException {
         gridLogIn.setAlignment(Pos.CENTER);
         gridLogIn.setHgap(10);
         gridLogIn.setVgap(12);
@@ -122,7 +118,7 @@ public class Main extends Application {
 
         GridPane gridBuyTicket = new GridPane();
         Scene sceneBuyTicket = new Scene(gridBuyTicket, 400, 400);
-        createSceneBuyTicket(sceneStart, sceneBuyTicket, gridBuyTicket, stations, trains);
+        createSceneBuyTicket(sceneStart, sceneBuyTicket, gridBuyTicket, stations);
 
         btnSubmitLogIn.setOnAction(e -> {
             if (tfName.getText().isEmpty()) {
@@ -144,7 +140,7 @@ public class Main extends Application {
     }
 
     public void createSceneBuyTicket(Scene sceneStart, Scene buyTicket, GridPane gridBuyTicket,
-                                     ArrayList<String> stations, ArrayList<Train> trains) throws IOException {
+                                     ArrayList<String> stations) throws IOException {
         gridBuyTicket.setAlignment(Pos.CENTER);
         gridBuyTicket.setHgap(10);
         gridBuyTicket.setVgap(12);
@@ -183,6 +179,7 @@ public class Main extends Application {
         hbButtonsSignUp.getChildren().addAll(btnSubmit, btnGoBackHome);
         gridBuyTicket.add(hbButtonsSignUp, 0, 7, 7, 1);
 
+        ArrayList<Train> trains = new ArrayList<>();
         ArrayList<Trip> tripOptions = new ArrayList<>();
 
         GridPane gridTripOptions = new GridPane();
@@ -210,6 +207,8 @@ public class Main extends Application {
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "Please select a date in the following 7 days");
                 return;
             }
+            String chosenTxtFile = chooseTxtFile(localDatePicked);
+            createTrains(trains,chosenTxtFile);
             if(!findTripOptions(cbDepartureStation, cbArrivalStation, trains, tripOptions)){
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "There aren't any train options available");
                 return;
@@ -327,12 +326,14 @@ public class Main extends Application {
         btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
         btnGoToHomePage.setOnAction(e -> window.setScene(sceneStart));
 
+        Button btnSubmit = new Button("Submit");
+        btnSubmit.setStyle("-fx-font-size: 12pt;");
+
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnGoBackTripOptions, btnGoToHomePage);
 
-        Button btnSubmit = new Button("Submit");
-        btnSubmit.setStyle("-fx-font-size: 12pt;");
+
 
         gridTicketDetails.add(labelNumberOfTickets, 0, 0);
         gridTicketDetails.add(tfNumberOfTickets, 0, 1);
@@ -362,14 +363,14 @@ public class Main extends Application {
                 return;
             }
             createSceneTicketInfoandPrice(sceneStart,sceneTicketDetails,tfNumberOfTickets, cbClass, cbStatus, tripOptions,
-                    cbSelectOption, gridTicketInfoandPrice, trains, localDatePicked);
+                    cbSelectOption, gridTicketInfoandPrice, trains, localDatePicked, sceneTicketInfoandPrice);
             window.setScene(sceneTicketInfoandPrice);
         });
     }
 
     public void createSceneTicketInfoandPrice (Scene sceneStart, Scene sceneTicketDetails, TextField tfNumberOfTickets, ComboBox cbClass,
                                                ComboBox cbStatus, ArrayList<Trip> tripOptions, ComboBox cbSelectOption, GridPane gridTicketInfoandPrice,
-                                               ArrayList<Train> trains, LocalDate localDatePicked){
+                                               ArrayList<Train> trains, LocalDate localDatePicked, Scene sceneTicketInfoandPrice){
         Trip selectedTrip =new Trip(tripOptions.get(0).getTrainNumber(),tripOptions.get(0).getDepartureTime(), tripOptions.get(0).getArrivalTime(),
                 tripOptions.get(0).getTripLength(), tripOptions.get(0).getDepartureStation(),tripOptions.get(0).getArrivalStation(),
                 tripOptions.get(0).getTripLengthInMinutes());
@@ -433,26 +434,24 @@ public class Main extends Application {
         gridTicketInfoandPrice.add(labelPricePerTicket, 0, 9 );
         gridTicketInfoandPrice.add(labelTotalPrice, 0, 10 );
 
-        Label labelConfirmPurchase = new Label("Confirm purchase?");
-        labelConfirmPurchase.setStyle("-fx-font-size: 12pt;");
-        gridTicketInfoandPrice.add(labelConfirmPurchase, 0, 11 );
-
         Button btnGoBackTripOptions = new Button("Go to previous page");
         btnGoBackTripOptions.setStyle("-fx-font-size: 12pt;");
         btnGoBackTripOptions.setOnAction(e -> window.setScene(sceneTicketDetails));
 
-        Button btnConfirm = new Button("Yes");
+        GridPane gridPayment = new GridPane();
+        Scene scenePayment = new Scene(gridPayment, 850, 600);
+        Button btnConfirm = new Button("Continue with the payment");
         btnConfirm.setStyle("-fx-font-size: 12pt;");
+
         btnConfirm.setOnAction(e ->{
-            String chosenTxtFile = chooseTxtFile(localDatePicked);
-            manageSeats(cbClass, trains, cbSelectOption, tfNumberOfTickets, chosenTxtFile);
-            window.setScene(sceneStart);
+            createScenePayment(sceneStart,sceneTicketInfoandPrice, gridPayment,tfNumberOfTickets, cbClass, cbSelectOption,  trains, localDatePicked);
+            window.setScene(scenePayment);
         });
 
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnConfirm, btnGoBackTripOptions);
-        gridTicketInfoandPrice.add(hbButtons, 0,12);
+        gridTicketInfoandPrice.add(hbButtons, 0,11);
     }
 
     public Double computePricePerTicket (Trip selectedTrip,  String selectedClass, String selectedStatus){
@@ -637,6 +636,117 @@ public class Main extends Application {
         };
     }
 
+    public void createScenePayment(Scene sceneStart, Scene sceneTicketInfoandPrice, GridPane gridPayment,TextField tfNumberOfTickets, ComboBox cbClass,
+                                  ComboBox cbSelectOption, ArrayList<Train> trains, LocalDate localDatePicked){
+        gridPayment.setAlignment(Pos.CENTER_LEFT);
+        gridPayment.setHgap(10);
+        gridPayment.setVgap(12);
+        gridPayment.setPadding(new Insets(30));
+
+        Label labelTitle = new Label("Introduce your card information ");
+        labelTitle.setStyle("-fx-font-size: 20pt;");
+        Label labelCardType = new Label("Card type:");
+        labelCardType.setStyle("-fx-font-size: 14pt;");
+        ComboBox cbCardType = new ComboBox();
+        cbCardType.getItems().addAll("VISA", "MasterCard");
+        Label labelCardNumber = new Label("Card number:");
+        labelCardNumber.setStyle("-fx-font-size: 14pt;");
+        TextField tfCardNumber=new TextField();
+        Label labelExpirationDate = new Label("Valid until:");
+        labelExpirationDate.setStyle("-fx-font-size: 14pt;");
+        Label labelMonth = new Label("Month:");
+        labelMonth.setStyle("-fx-font-size: 11pt;");
+        ComboBox cbMonth= new ComboBox();
+        cbMonth.getItems().addAll("01","02","03","04","05","06","07","08","09","10","11","12");
+        Label labelYear= new Label("Year:");
+        labelYear.setStyle("-fx-font-size: 11pt;");
+        ComboBox cbYear= new ComboBox();
+        cbYear.getItems().addAll("2021","2022","2023","2024","2025","2026","2027","2028","2029","2030","2031");
+        Label labelCVV = new Label("CVV:");
+        labelCVV.setStyle("-fx-font-size: 14pt;");
+        TextField tfCVV=new TextField();
+
+        Button btnFinalizePayment = new Button("Finalize Payment");
+        btnFinalizePayment.setStyle("-fx-font-size: 12pt;");
+        Button btnGoBackPrevious= new Button("Go to previous page");
+        btnGoBackPrevious.setStyle("-fx-font-size: 12pt;");
+        btnGoBackPrevious.setOnAction(e -> window.setScene(sceneTicketInfoandPrice));
+
+        HBox hbButtons = new HBox();
+        hbButtons.setSpacing(10.0);
+        hbButtons.getChildren().addAll(btnGoBackPrevious,btnFinalizePayment);
+        gridPayment.add(labelTitle, 0,0);
+        gridPayment.add(labelCardType, 0,1);
+        gridPayment.add(cbCardType, 1,1);
+        gridPayment.add(labelCardNumber, 0,2);
+        gridPayment.add(tfCardNumber, 1,2);
+        gridPayment.add(labelExpirationDate, 0,3);
+        gridPayment.add(labelMonth, 1,3);
+        gridPayment.add(cbMonth, 2,3);
+        gridPayment.add(labelYear, 3,3);
+        gridPayment.add(cbYear, 4,3);
+        gridPayment.add(labelCVV, 0,4);
+        gridPayment.add(tfCVV, 1,4);
+        gridPayment.add(hbButtons, 0,5);
+
+        StackPane layoutFinal = new StackPane();
+        Scene finalScene = new Scene(layoutFinal, 400, 400);
+        btnFinalizePayment.setOnAction(e->{
+            if (cbCardType.getSelectionModel().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPayment.getScene().getWindow(), "Form Error!", "Please select a card type");
+                return;
+            }
+            if (tfCardNumber.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPayment.getScene().getWindow(), "Form Error!", "Please introduce your card number");
+                return;
+            }
+            if (cbMonth.getSelectionModel().isEmpty()||cbYear.getSelectionModel().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPayment.getScene().getWindow(), "Form Error!", "Please select the expiration date for your card");
+                return;
+            }
+            if (tfCardNumber.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPayment.getScene().getWindow(), "Form Error!", "Please introduce your card's CVV");
+                return;
+            }
+            if (!tfCardNumber.getText().matches("\\d{12}")) {
+                showAlert(Alert.AlertType.ERROR, gridPayment.getScene().getWindow(), "Form Error!", "Please enter a valid card number");
+                return;
+            }
+            if (!tfCVV.getText().matches("\\d{3}")) {
+                showAlert(Alert.AlertType.ERROR, gridPayment.getScene().getWindow(), "Form Error!", "Please enter a valid CVV");
+                return;
+            }
+            String chosenTxtFile = chooseTxtFile(localDatePicked);
+            manageSeats(cbClass, trains, cbSelectOption, tfNumberOfTickets, chosenTxtFile);
+            createFinalScene(sceneStart,layoutFinal);
+            window.setScene(finalScene);
+
+        });
+
+
+    }
+
+    public void createFinalScene(Scene sceneStart, StackPane layoutFinal){
+        layoutFinal.setPadding(new Insets(20, 0, 20, 20));
+        Label labelTitle = new Label("Thank you for your purchase! ");
+        labelTitle.setStyle("-fx-font-size: 20pt;");
+        Button btnGoToHomePage = new Button("Go to home page");
+        btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
+
+        //VBox vBox = new VBox();
+        //vBox.setSpacing(10);
+        //vBox.setPadding(new Insets(10, 20, 10, 10));
+        //vBox.getChildren().addAll(labelTitle,btnGoToHomePage);
+        layoutFinal.setAlignment(Pos.CENTER);
+        labelTitle.setTranslateX(50);
+        labelTitle.setTranslateY(50);
+        btnGoToHomePage.setTranslateX(100);
+        btnGoToHomePage.setTranslateY(150);
+        //layoutFinal.getChildren().add(btnGoToHomePage);
+        layoutFinal.getChildren().addAll(labelTitle,btnGoToHomePage);
+        btnGoToHomePage.setOnAction(e->window.setScene(sceneStart));
+
+    }
     public void createSceneSignUp(Scene sceneStart, Scene sceneLogIn, User user, GridPane gridSignUp) {
         gridSignUp.setAlignment(Pos.CENTER_LEFT);
         gridSignUp.setHgap(10);
@@ -808,12 +918,30 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
-
+    public void writeUserDetails(User user) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("userDetails.txt", true))) {
+            bw.write(user.getFirstName());
+            bw.newLine();
+            bw.write(user.getLastName());
+            bw.newLine();
+            bw.write(user.getEmail());
+            bw.newLine();
+            bw.write(user.getPhoneNumber());
+            bw.newLine();
+            bw.write(user.getResidence());
+            bw.newLine();
+            bw.write(user.getPassword());
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void createUser(User user, TextField tfLastNameSignUp, TextField tfFirstNameSignUp, TextField tfEmailSignUp,
                            TextField tfPhoneSignUp, TextField tfResidenceSignUp, PasswordField pfPwdSignUp) {
         user = getUserInfo(user, tfLastNameSignUp, tfFirstNameSignUp, tfEmailSignUp,
                 tfPhoneSignUp, tfResidenceSignUp, pfPwdSignUp);
         writeNewUser(user);
+        writeUserDetails(user);
     }
 
     public boolean validateLogIn(TextField tfName, TextField pfPassword) {
@@ -863,9 +991,9 @@ public class Main extends Application {
         }
     }
 
-    public static void createTrains(ArrayList<Train> trains) {
+    public static void createTrains(ArrayList<Train> trains, String chosenTxtFile) {
         try {
-            FileReader fileTrainNumbers = new FileReader("D:\\Train_Booker\\Train_Booker\\trainInfo.txt");
+            FileReader fileTrainNumbers = new FileReader(chosenTxtFile);
             BufferedReader br = new BufferedReader(fileTrainNumbers);
 
             String data = br.readLine();
