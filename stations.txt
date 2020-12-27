@@ -2,34 +2,33 @@ Alba Iulia
 Alexandria
 Arad
 Bacău
-Baia Mare
 Bistriţa
 Botoşani
 Braşov
 Brăila
 Buzău
+Reşiţa
 Călăraşi
 Cluj-Napoca
 Constanţa
 Craiova
 Deva
 Drobeta Turnu Severin
-Focşani
 Galaţi
 Giurgiu
-Iaşi
 Miercurea Ciuc
-Oradea
+Slobozia
+Iaşi
+Baia Mare
 Piatra Neamţ
+Sfântu Gheorghe
+Slatina
+Oradea
 Piteşti
 Ploieşti
-Râmnicu Vâlcea
-Reşiţa
 Satu Mare
-Sfântu Gheorghe
+Zalău
 Sibiu
-Slatina
-Slobozia
 Suceava
 Târgovişte
 Târgu Mureş
@@ -37,4 +36,5 @@ Târgu Jiu
 Timişoara
 Tulcea
 Vaslui
-Zalău
+Râmnicu Vâlcea
+Focşani
