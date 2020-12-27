@@ -201,16 +201,20 @@ public class Main extends Application {
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "Please pick a date for your trip");
                 return;
             }
-
             if (datePicker.getValue().isBefore(LocalDate.now())) {
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "Select a valid date");
+                return;
+            }
+            LocalDate localDatePicked = datePicker.getValue();
+            if(chooseTxtFile(localDatePicked).equals("Error")){
+                showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "Please select a date in the following 7 days");
                 return;
             }
             if(!findTripOptions(cbDepartureStation, cbArrivalStation, trains, tripOptions)){
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "There aren't any train options available");
                 return;
             }
-            createSceneTripOptions(sceneStart, buyTicket, tripOptions, sceneTripOptions, gridTripOptions, trains);
+            createSceneTripOptions(sceneStart, buyTicket, tripOptions, sceneTripOptions, gridTripOptions, trains, localDatePicked);
             cbDepartureStation.getSelectionModel().clearSelection();
             cbArrivalStation.getSelectionModel().clearSelection();
             datePicker.setValue(null);
@@ -219,7 +223,7 @@ public class Main extends Application {
     }
 
     public void createSceneTripOptions(Scene sceneStart, Scene buyTicket, ArrayList<Trip> tripOptions,
-                                       Scene sceneTripOptions, GridPane gridTripOptions,  ArrayList<Train> trains){
+                                       Scene sceneTripOptions, GridPane gridTripOptions,  ArrayList<Train> trains, LocalDate localDatePicked){
         TableView<Trip> table = new TableView<Trip>();
 
         gridTripOptions.setAlignment(Pos.CENTER_LEFT);
@@ -291,13 +295,14 @@ public class Main extends Application {
         GridPane gridTicketDetails = new GridPane();
         Scene sceneTicketDetails = new Scene(gridTicketDetails, 680, 400);
         btnSubmit.setOnAction(e -> {
-            createSceneTicketDetails(sceneStart, sceneTripOptions, sceneTicketDetails, gridTicketDetails, trains,tripOptions, cbSelectOption);
+            createSceneTicketDetails(sceneStart, sceneTripOptions, sceneTicketDetails, gridTicketDetails, trains,tripOptions,
+                    cbSelectOption, localDatePicked);
             window.setScene(sceneTicketDetails);
         });
     }
 
     public void createSceneTicketDetails(Scene sceneStart, Scene sceneTripOptions, Scene sceneTicketDetails, GridPane gridTicketDetails,
-                                         ArrayList<Train> trains,ArrayList<Trip> tripOptions, ComboBox cbSelectOption){
+                                         ArrayList<Train> trains,ArrayList<Trip> tripOptions, ComboBox cbSelectOption, LocalDate localDatePicked){
         gridTicketDetails.setAlignment(Pos.CENTER_LEFT);
         gridTicketDetails.setHgap(10);
         gridTicketDetails.setVgap(12);
@@ -356,19 +361,22 @@ public class Main extends Application {
             if (!checkNrOfAvailableSeats(cbClass, trains, cbSelectOption, tfNumberOfTickets, gridTicketDetails)){
                 return;
             }
-            createSceneTicketInfoandPrice(sceneStart,sceneTicketDetails,tfNumberOfTickets, cbClass, cbStatus, tripOptions, cbSelectOption, gridTicketInfoandPrice, trains);
+            createSceneTicketInfoandPrice(sceneStart,sceneTicketDetails,tfNumberOfTickets, cbClass, cbStatus, tripOptions,
+                    cbSelectOption, gridTicketInfoandPrice, trains, localDatePicked);
             window.setScene(sceneTicketInfoandPrice);
         });
     }
 
     public void createSceneTicketInfoandPrice (Scene sceneStart, Scene sceneTicketDetails, TextField tfNumberOfTickets, ComboBox cbClass,
-                                               ComboBox cbStatus, ArrayList<Trip> tripOptions, ComboBox cbSelectOption, GridPane gridTicketInfoandPrice, ArrayList<Train> trains){
+                                               ComboBox cbStatus, ArrayList<Trip> tripOptions, ComboBox cbSelectOption, GridPane gridTicketInfoandPrice,
+                                               ArrayList<Train> trains, LocalDate localDatePicked){
         Trip selectedTrip =new Trip(tripOptions.get(0).getTrainNumber(),tripOptions.get(0).getDepartureTime(), tripOptions.get(0).getArrivalTime(),
-                tripOptions.get(0).getTripLength(), tripOptions.get(0).getDepartureStation(),tripOptions.get(0).getArrivalStation());
+                tripOptions.get(0).getTripLength(), tripOptions.get(0).getDepartureStation(),tripOptions.get(0).getArrivalStation(),
+                tripOptions.get(0).getTripLengthInMinutes());
         for (Trip trip:tripOptions){
             if(trip.getTrainNumber().equals(cbSelectOption.getValue())){
-                selectedTrip= new Trip(trip.getTrainNumber(),trip.getDepartureTime(), trip.getArrivalTime(), trip.getTripLength(), trip.getDepartureStation(),
-                                    trip.getArrivalStation());
+                selectedTrip = new Trip(trip.getTrainNumber(),trip.getDepartureTime(), trip.getArrivalTime(), trip.getTripLength(), trip.getDepartureStation(),
+                                    trip.getArrivalStation(), trip.getTripLengthInMinutes());
             }
         }
         gridTicketInfoandPrice.setAlignment(Pos.CENTER_LEFT);
@@ -378,40 +386,56 @@ public class Main extends Application {
 
         Label labelTitle = new Label("Your trip details");
         labelTitle.setStyle("-fx-font-size: 20pt;");
-        Label labelTrainNumber= new Label("Train number: " + selectedTrip.getTrainNumber());
+        Label labelTrainNumber = new Label("Train number: " + selectedTrip.getTrainNumber());
         labelTrainNumber.setStyle("-fx-font-size: 12pt;");
-        Label labelDepartureStation= new Label("Departure station: " + selectedTrip.getDepartureStation());
+        Label labelDepartureDate = new Label("Departure date: " + localDatePicked);
+        labelDepartureDate.setStyle("-fx-font-size: 12pt;");
+        Label labelDepartureStation = new Label("Departure station: " + selectedTrip.getDepartureStation());
         labelDepartureStation.setStyle("-fx-font-size: 12pt;");
-        Label labelArrivalStation= new Label("Arrival station: " + selectedTrip.getArrivalStation());
+        Label labelArrivalStation = new Label("Arrival station: " + selectedTrip.getArrivalStation());
         labelArrivalStation.setStyle("-fx-font-size: 12pt;");
-        Label labelDepartureTime= new Label("Departure time: " + selectedTrip.getDepartureTime());
+        Label labelDepartureTime = new Label("Departure time: " + selectedTrip.getDepartureTime());
         labelDepartureTime.setStyle("-fx-font-size: 12pt;");
-        Label labelArrivalTime= new Label("Arrival time: " + selectedTrip.getArrivalTime());
+        Label labelArrivalTime = new Label("Arrival time: " + selectedTrip.getArrivalTime());
         labelArrivalTime.setStyle("-fx-font-size: 12pt;");
-        Label labelTripLength= new Label("Trip length: " + selectedTrip.getTripLength());
+        Label labelTripLength = new Label("Trip length: " + selectedTrip.getTripLength());
         labelTripLength.setStyle("-fx-font-size: 12pt;");
 
-        Label labelNrOfTickets=new Label("Number of tickets: " + tfNumberOfTickets.getText());
+        Integer nrOfTickets = Integer.parseInt(tfNumberOfTickets.getText());
+        String selectedClass = (String) cbClass.getValue();
+        String selectedStatus = (String) cbStatus.getValue();
+        
+        Label labelNrOfTickets=new Label("Number of tickets: " + nrOfTickets);
         labelNrOfTickets.setStyle("-fx-font-size: 12pt;");
-        Label labelClass=new Label("Class: " + cbClass.getValue());
+        Label labelClass=new Label("Class: " + selectedClass);
         labelClass.setStyle("-fx-font-size: 12pt;");
-        Label labelStatus=new Label("Status of the traveler(s): " + cbStatus.getValue());
+        Label labelStatus=new Label("Status of the traveler(s): " + selectedStatus);
         labelStatus.setStyle("-fx-font-size: 12pt;");
+
+        Double pricePerTicket = computePricePerTicket (selectedTrip,  selectedClass, selectedStatus);
+        Double totalPrice = nrOfTickets * pricePerTicket;
+        Label labelPricePerTicket = new Label("Price per ticket: " + pricePerTicket.toString());
+        labelPricePerTicket.setStyle("-fx-font-size: 12pt;");
+        Label labelTotalPrice = new Label("Total price: " + totalPrice.toString());
+        labelTotalPrice.setStyle("-fx-font-size: 12pt;");
 
         gridTicketInfoandPrice.add(labelTitle, 0, 0 );
         gridTicketInfoandPrice.add(labelTrainNumber, 0, 1 );
-        gridTicketInfoandPrice.add(labelDepartureStation, 0, 2 );
-        gridTicketInfoandPrice.add(labelArrivalStation, 0, 3 );
-        gridTicketInfoandPrice.add(labelDepartureTime, 1,2 );
-        gridTicketInfoandPrice.add(labelArrivalTime, 1,3 );
-        gridTicketInfoandPrice.add(labelTripLength, 0, 4 );
-        gridTicketInfoandPrice.add(labelNrOfTickets, 0, 5 );
-        gridTicketInfoandPrice.add(labelClass, 0, 6 );
-        gridTicketInfoandPrice.add(labelStatus, 0, 7 );
+        gridTicketInfoandPrice.add(labelDepartureDate, 0, 2 );
+        gridTicketInfoandPrice.add(labelDepartureStation, 0, 3 );
+        gridTicketInfoandPrice.add(labelArrivalStation, 0, 4 );
+        gridTicketInfoandPrice.add(labelDepartureTime, 1,3 );
+        gridTicketInfoandPrice.add(labelArrivalTime, 1,4 );
+        gridTicketInfoandPrice.add(labelTripLength, 0, 5 );
+        gridTicketInfoandPrice.add(labelNrOfTickets, 0, 6 );
+        gridTicketInfoandPrice.add(labelClass, 0, 7 );
+        gridTicketInfoandPrice.add(labelStatus, 0, 8 );
+        gridTicketInfoandPrice.add(labelPricePerTicket, 0, 9 );
+        gridTicketInfoandPrice.add(labelTotalPrice, 0, 10 );
 
         Label labelConfirmPurchase = new Label("Confirm purchase?");
         labelConfirmPurchase.setStyle("-fx-font-size: 12pt;");
-        gridTicketInfoandPrice.add(labelConfirmPurchase, 0, 8 );
+        gridTicketInfoandPrice.add(labelConfirmPurchase, 0, 11 );
 
         Button btnGoBackTripOptions = new Button("Go to previous page");
         btnGoBackTripOptions.setStyle("-fx-font-size: 12pt;");
@@ -420,14 +444,48 @@ public class Main extends Application {
         Button btnConfirm = new Button("Yes");
         btnConfirm.setStyle("-fx-font-size: 12pt;");
         btnConfirm.setOnAction(e ->{
-            manageSeats(cbClass, trains, cbSelectOption, tfNumberOfTickets);
+            String chosenTxtFile = chooseTxtFile(localDatePicked);
+            manageSeats(cbClass, trains, cbSelectOption, tfNumberOfTickets, chosenTxtFile);
             window.setScene(sceneStart);
         });
 
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnConfirm, btnGoBackTripOptions);
-        gridTicketInfoandPrice.add(hbButtons, 0,9);
+        gridTicketInfoandPrice.add(hbButtons, 0,12);
+    }
+
+    public Double computePricePerTicket (Trip selectedTrip,  String selectedClass, String selectedStatus){
+        Double pricePerMinute = 0.5;
+
+        //"regular adult", "child(less than 6 years old)", "pupil", "student", "retired person"
+        switch (selectedClass) {
+            case "first class":
+            case "first class sleeping wagon":
+                if (selectedStatus.equals("child(less than 6 years old)")) {
+                    pricePerMinute = 0.00;
+                } else {
+                    pricePerMinute = 0.40;
+                }
+                break;
+            case "second class":
+                if (selectedStatus.equals("regular adult")) {
+                    pricePerMinute = 0.25;
+                } else if (selectedStatus.equals("pupil")) {
+                    pricePerMinute = 0.12;
+                } else {
+                    pricePerMinute = 0.00;
+                }
+                break;
+            case "second class sleeping wagon":
+                if (selectedStatus.equals("child(less than 6 years old)")) {
+                    pricePerMinute = 0.00;
+                } else {
+                    pricePerMinute = 0.37;
+                }
+                break;
+        }
+        return selectedTrip.getTripLengthInMinutes() * pricePerMinute;
     }
 
     public Boolean checkNrOfAvailableSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets,
@@ -472,7 +530,7 @@ public class Main extends Application {
         return true;
     }
 
-    public void manageSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets){
+    public void manageSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets, String chosenTxtFile){
         String selectedTrainOption = (String) cbSelectOption.getValue();
         String selectedClass = (String) cbClass.getValue();
 
@@ -481,28 +539,58 @@ public class Main extends Application {
                 switch (selectedClass) {
                     case "first class" -> {
                         train.setSeats1Class(train.getSeats1Class() - Integer.parseInt(tfNumberOfTickets.getText()));
-                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
+                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets, chosenTxtFile);
                     }
                     case "second class" -> {
                         train.setSeats2Class(train.getSeats2Class() - Integer.parseInt(tfNumberOfTickets.getText()));
-                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
+                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets, chosenTxtFile);
                     }
                     case "first class sleeping wagon" -> {
                         train.setSeats1SleepingClass(train.getSeats1SleepingClass() - Integer.parseInt(tfNumberOfTickets.getText()));
-                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
+                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets, chosenTxtFile);
                     }
                     case "second class sleeping wagon" -> {
                         train.setSeats2SleepingClass(train.getSeats2SleepingClass() - Integer.parseInt(tfNumberOfTickets.getText()));
-                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets);
+                        updateSeatsTrainInfo(selectedTrainOption, selectedClass, tfNumberOfTickets, chosenTxtFile);
                     }
                 }
             }
         }
     }
 
-    public void updateSeatsTrainInfo(String selectedTrainOption, String selectedClass, TextField tfNumberOfTickets){
+    public String chooseTxtFile(LocalDate localDatePicked){
+        LocalDate targetLocalDate = LocalDate.of( 2021, 1, 6 );
+        LocalDate targetLocalDate1 = LocalDate.of( 2021, 1, 7 );
+        LocalDate targetLocalDate2 = LocalDate.of( 2021, 1, 8 );
+        LocalDate targetLocalDate3 = LocalDate.of( 2021, 1, 9 );
+        LocalDate targetLocalDate4 = LocalDate.of( 2021, 1, 10 );
+        LocalDate targetLocalDate5 = LocalDate.of( 2021, 1, 11 );
+        LocalDate targetLocalDate6 = LocalDate.of( 2021, 1, 12 );
+
+        String errorMsg = "Error";
+
+        if ( localDatePicked.equals( targetLocalDate )){
+            return "trainInfo.txt";
+        }else if(localDatePicked.equals( targetLocalDate1 )){
+            return "trainInfo1.txt";
+        }else if(localDatePicked.equals( targetLocalDate2 )){
+            return "trainInfo2.txt";
+        }else if(localDatePicked.equals( targetLocalDate3 )){
+            return "trainInfo3.txt";
+        }else if(localDatePicked.equals( targetLocalDate4 )){
+            return "trainInfo4.txt";
+        }else if(localDatePicked.equals( targetLocalDate5 )){
+            return "trainInfo5.txt";
+        }else if(localDatePicked.equals( targetLocalDate6 )){
+            return "trainInfo6.txt";
+        }else{
+            return errorMsg;
+        }
+    }
+
+    public void updateSeatsTrainInfo(String selectedTrainOption, String selectedClass, TextField tfNumberOfTickets, String chosenTxtFile){
         try {
-            FileReader fileTrainNumbers = new FileReader("D:\\Train_Booker\\Train_Booker\\trainInfo.txt");
+            FileReader fileTrainNumbers = new FileReader(chosenTxtFile);
             BufferedReader br = new BufferedReader(fileTrainNumbers);
             StringBuffer inputBuffer = new StringBuffer();
             Integer nrOfTickets = Integer.parseInt(tfNumberOfTickets.getText());
@@ -528,10 +616,9 @@ public class Main extends Application {
                 line++;
             }
             String inputStr = inputBuffer.toString();
-            System.out.println(inputStr);
             fileTrainNumbers.close();
 
-            FileOutputStream fileOut = new FileOutputStream("D:\\Train_Booker\\Train_Booker\\trainInfo.txt");
+            FileOutputStream fileOut = new FileOutputStream(chosenTxtFile);
             fileOut.write(inputStr.getBytes());
             fileOut.close();
 
@@ -771,11 +858,8 @@ public class Main extends Application {
         File file = new File("D:\\Train_Booker\\Train_Booker\\stations.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String string;
-        int i = 0;
         while ((string = br.readLine()) != null) {
             stations.add(string);
-            String station = stations.get(i++);
-            System.out.println(station);
         }
     }
 
@@ -856,9 +940,11 @@ public class Main extends Application {
         }
     }
 
-    public boolean findTripOptions(ComboBox cbDepartureStation, ComboBox cbArrivalStation, ArrayList<Train> trains, ArrayList<Trip> tripOptions) {
+    public boolean findTripOptions(ComboBox cbDepartureStation, ComboBox cbArrivalStation, ArrayList<Train> trains,
+                                   ArrayList<Trip> tripOptions) {
         String selectedDS = (String) cbDepartureStation.getValue();
         String selectedAS = (String) cbArrivalStation.getValue();
+        //Integer countStations;
         boolean dsFound = false, asFound = false;
         int indexDS = -1, indexAS = -1;
         Integer departureTime, arrivalTime, tripLength;
@@ -885,23 +971,14 @@ public class Main extends Application {
                     arrivalTime = arrivalTime + train.getTimeBetweenStations()[i];
                 }
                 tripLength = arrivalTime - departureTime;
+                //countStations = indexAS - indexDS;
                 Trip trip = new Trip(train.getTrainNumber(), convertTime(departureTime), convertTime(arrivalTime),
-                        convertTime(tripLength), selectedDS, selectedAS);
+                        convertTime(tripLength), selectedDS, selectedAS, tripLength);
                 tripOptions.add(trip);
             }
             dsFound = false;
             asFound = false;
         }
-        /*
-        for (Trip tripOption : tripOptions) {
-            System.out.println("train number " + tripOption.getTrainNumber());
-            System.out.println("departure time " + tripOption.getDepartureTime());
-            System.out.println("arrival time" + tripOption.getArrivalTime());
-            System.out.println("trip length " + tripOption.getTripLength());
-            System.out.println("departure station" + tripOption.getDepartureStation());
-            System.out.println("arrival station" + tripOption.getArrivalStation());
-        }
-         */
         return tripOptions.size() > 0;
     }
 
