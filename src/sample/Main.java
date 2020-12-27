@@ -333,8 +333,6 @@ public class Main extends Application {
         hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnGoBackTripOptions, btnGoToHomePage);
 
-
-
         gridTicketDetails.add(labelNumberOfTickets, 0, 0);
         gridTicketDetails.add(tfNumberOfTickets, 0, 1);
         gridTicketDetails.add(labelClass, 0, 2);
@@ -722,8 +720,6 @@ public class Main extends Application {
             window.setScene(finalScene);
 
         });
-
-
     }
 
     public void createFinalScene(Scene sceneStart, StackPane layoutFinal){
