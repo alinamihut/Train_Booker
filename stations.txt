@@ -2,33 +2,36 @@ Alba Iulia
 Alexandria
 Arad
 Bacău
+Baia Mare
 Bistriţa
 Botoşani
 Braşov
 Brăila
 Buzău
-Reşiţa
 Călăraşi
 Cluj-Napoca
 Constanţa
 Craiova
 Deva
 Drobeta Turnu Severin
+Focşani
 Galaţi
 Giurgiu
 Miercurea Ciuc
 Slobozia
 Iaşi
-Baia Mare
-Piatra Neamţ
-Sfântu Gheorghe
-Slatina
+Miercurea Ciuc
 Oradea
+Piatra Neamţ
 Piteşti
 Ploieşti
+Râmnicu Vâlcea
+Reşiţa
 Satu Mare
-Zalău
+Sfântu Gheorghe
 Sibiu
+Slatina
+Slobozia
 Suceava
 Târgovişte
 Târgu Mureş
@@ -36,5 +39,45 @@ Târgu Jiu
 Timişoara
 Tulcea
 Vaslui
-Râmnicu Vâlcea
+ZalăuAlba Iulia
+Alexandria
+Arad
+Bacău
+Baia Mare
+Bistriţa
+Botoşani
+Braşov
+Brăila
+Buzău
+Călăraşi
+Cluj-Napoca
+Constanţa
+Craiova
+Deva
+Drobeta Turnu Severin
 Focşani
+Galaţi
+Giurgiu
+Miercurea Ciuc
+Slobozia
+Iaşi
+Miercurea Ciuc
+Oradea
+Piatra Neamţ
+Piteşti
+Ploieşti
+Râmnicu Vâlcea
+Reşiţa
+Satu Mare
+Sfântu Gheorghe
+Sibiu
+Slatina
+Slobozia
+Suceava
+Târgovişte
+Târgu Mureş
+Târgu Jiu
+Timişoara
+Tulcea
+Vaslui
+Zalău
