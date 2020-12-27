@@ -39,45 +39,4 @@ Târgu Jiu
 Timişoara
 Tulcea
 Vaslui
-ZalăuAlba Iulia
-Alexandria
-Arad
-Bacău
-Baia Mare
-Bistriţa
-Botoşani
-Braşov
-Brăila
-Buzău
-Călăraşi
-Cluj-Napoca
-Constanţa
-Craiova
-Deva
-Drobeta Turnu Severin
-Focşani
-Galaţi
-Giurgiu
-Miercurea Ciuc
-Slobozia
-Iaşi
-Miercurea Ciuc
-Oradea
-Piatra Neamţ
-Piteşti
-Ploieşti
-Râmnicu Vâlcea
-Reşiţa
-Satu Mare
-Sfântu Gheorghe
-Sibiu
-Slatina
-Slobozia
-Suceava
-Târgovişte
-Târgu Mureş
-Târgu Jiu
-Timişoara
-Tulcea
-Vaslui
 Zalău
