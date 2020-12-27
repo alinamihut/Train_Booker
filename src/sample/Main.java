@@ -140,7 +140,7 @@ public class Main extends Application {
     }
 
     public void createSceneBuyTicket(Scene sceneStart, Scene buyTicket, GridPane gridBuyTicket,
-                                     ArrayList<String> stations) throws IOException {
+                                     ArrayList<String> stations) {
         gridBuyTicket.setAlignment(Pos.CENTER);
         gridBuyTicket.setHgap(10);
         gridBuyTicket.setVgap(12);
@@ -179,9 +179,6 @@ public class Main extends Application {
         hbButtonsSignUp.getChildren().addAll(btnSubmit, btnGoBackHome);
         gridBuyTicket.add(hbButtonsSignUp, 0, 7, 7, 1);
 
-        ArrayList<Train> trains = new ArrayList<>();
-        ArrayList<Trip> tripOptions = new ArrayList<>();
-
         GridPane gridTripOptions = new GridPane();
         Scene sceneTripOptions = new Scene(gridTripOptions, 680, 400);
 
@@ -208,7 +205,9 @@ public class Main extends Application {
                 return;
             }
             String chosenTxtFile = chooseTxtFile(localDatePicked);
+            ArrayList<Train> trains = new ArrayList<>();
             createTrains(trains,chosenTxtFile);
+            ArrayList<Trip> tripOptions = new ArrayList<>();
             if(!findTripOptions(cbDepartureStation, cbArrivalStation, trains, tripOptions)){
                 showAlert(Alert.AlertType.ERROR, gridBuyTicket.getScene().getWindow(), "Form Error!", "There aren't any train options available");
                 return;
@@ -256,9 +255,11 @@ public class Main extends Application {
         }
 
         VBox vBoxTable = new VBox();
+        vBoxTable.getChildren().clear();
         vBoxTable.setSpacing(10);
         vBoxTable.setPadding(new Insets(10, 20, 10, 10));
         vBoxTable.getChildren().addAll(label, table);
+
         gridTripOptions.add(vBoxTable, 0, 0);
 
         Button btnGoBackBuyTicket = new Button("Go to previous page");
@@ -295,13 +296,13 @@ public class Main extends Application {
         Scene sceneTicketDetails = new Scene(gridTicketDetails, 680, 400);
         btnSubmit.setOnAction(e -> {
             createSceneTicketDetails(sceneStart, sceneTripOptions, sceneTicketDetails, gridTicketDetails, trains,tripOptions,
-                    cbSelectOption, localDatePicked);
+                    cbSelectOption, localDatePicked,table);
             window.setScene(sceneTicketDetails);
         });
     }
 
     public void createSceneTicketDetails(Scene sceneStart, Scene sceneTripOptions, Scene sceneTicketDetails, GridPane gridTicketDetails,
-                                         ArrayList<Train> trains,ArrayList<Trip> tripOptions, ComboBox cbSelectOption, LocalDate localDatePicked){
+                                         ArrayList<Train> trains,ArrayList<Trip> tripOptions, ComboBox cbSelectOption, LocalDate localDatePicked,TableView<Trip> table){
         gridTicketDetails.setAlignment(Pos.CENTER_LEFT);
         gridTicketDetails.setHgap(10);
         gridTicketDetails.setVgap(12);
@@ -363,14 +364,14 @@ public class Main extends Application {
                 return;
             }
             createSceneTicketInfoandPrice(sceneStart,sceneTicketDetails,tfNumberOfTickets, cbClass, cbStatus, tripOptions,
-                    cbSelectOption, gridTicketInfoandPrice, trains, localDatePicked, sceneTicketInfoandPrice);
+                    cbSelectOption, gridTicketInfoandPrice, trains, localDatePicked, sceneTicketInfoandPrice,table);
             window.setScene(sceneTicketInfoandPrice);
         });
     }
 
     public void createSceneTicketInfoandPrice (Scene sceneStart, Scene sceneTicketDetails, TextField tfNumberOfTickets, ComboBox cbClass,
                                                ComboBox cbStatus, ArrayList<Trip> tripOptions, ComboBox cbSelectOption, GridPane gridTicketInfoandPrice,
-                                               ArrayList<Train> trains, LocalDate localDatePicked, Scene sceneTicketInfoandPrice){
+                                               ArrayList<Train> trains, LocalDate localDatePicked, Scene sceneTicketInfoandPrice,TableView<Trip> table){
         Trip selectedTrip =new Trip(tripOptions.get(0).getTrainNumber(),tripOptions.get(0).getDepartureTime(), tripOptions.get(0).getArrivalTime(),
                 tripOptions.get(0).getTripLength(), tripOptions.get(0).getDepartureStation(),tripOptions.get(0).getArrivalStation(),
                 tripOptions.get(0).getTripLengthInMinutes());
@@ -444,7 +445,7 @@ public class Main extends Application {
         btnConfirm.setStyle("-fx-font-size: 12pt;");
 
         btnConfirm.setOnAction(e ->{
-            createScenePayment(sceneStart,sceneTicketInfoandPrice, gridPayment,tfNumberOfTickets, cbClass, cbSelectOption,  trains, localDatePicked);
+            createScenePayment(sceneStart,sceneTicketInfoandPrice, gridPayment,tfNumberOfTickets, cbClass, cbSelectOption,  trains, localDatePicked,table);
             window.setScene(scenePayment);
         });
 
@@ -637,7 +638,7 @@ public class Main extends Application {
     }
 
     public void createScenePayment(Scene sceneStart, Scene sceneTicketInfoandPrice, GridPane gridPayment,TextField tfNumberOfTickets, ComboBox cbClass,
-                                  ComboBox cbSelectOption, ArrayList<Train> trains, LocalDate localDatePicked){
+                                  ComboBox cbSelectOption, ArrayList<Train> trains, LocalDate localDatePicked,TableView<Trip> table){
         gridPayment.setAlignment(Pos.CENTER_LEFT);
         gridPayment.setHgap(10);
         gridPayment.setVgap(12);
@@ -718,6 +719,7 @@ public class Main extends Application {
             }
             String chosenTxtFile = chooseTxtFile(localDatePicked);
             manageSeats(cbClass, trains, cbSelectOption, tfNumberOfTickets, chosenTxtFile);
+            table.getItems().clear();
             createFinalScene(sceneStart,layoutFinal);
             window.setScene(finalScene);
 
