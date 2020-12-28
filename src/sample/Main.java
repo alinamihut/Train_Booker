@@ -306,7 +306,7 @@ public class Main extends Application {
 
         Label labelStatus = new Label("Select your status");
         ComboBox cbStatus = new ComboBox();
-        cbStatus.getItems().addAll("regular adult", "child(less than 6 years old)", "pupil", "student", "retired person");
+        cbStatus.getItems().addAll("adult", "child(less than 6 years old)", "pupil", "student", "retired person");
 
         Button btnGoBackTripOptions = new Button("Go to previous page");
         btnGoBackTripOptions.setStyle("-fx-font-size: 12pt;");
@@ -396,7 +396,7 @@ public class Main extends Application {
         
         Label labelNrOfTickets=new Label("Number of tickets: " + nrOfTickets);
         labelNrOfTickets.setStyle("-fx-font-size: 12pt;");
-        Label labelClass=new Label("Class: " + selectedClass);
+        Label labelClass=new Label("Travel class: " + selectedClass);
         labelClass.setStyle("-fx-font-size: 12pt;");
         Label labelStatus=new Label("Status of the traveler(s): " + selectedStatus);
         labelStatus.setStyle("-fx-font-size: 12pt;");
@@ -445,7 +445,6 @@ public class Main extends Application {
     public Double computePricePerTicket (Trip selectedTrip,  String selectedClass, String selectedStatus){
         Double pricePerMinute = 0.5;
 
-        //"regular adult", "child(less than 6 years old)", "pupil", "student", "retired person"
         switch (selectedClass) {
             case "first class":
             case "first class sleeping wagon":
@@ -456,7 +455,7 @@ public class Main extends Application {
                 }
                 break;
             case "second class":
-                if (selectedStatus.equals("regular adult")) {
+                if (selectedStatus.equals("adult")) {
                     pricePerMinute = 0.25;
                 } else if (selectedStatus.equals("pupil")) {
                     pricePerMinute = 0.12;
@@ -721,10 +720,10 @@ public class Main extends Application {
         labelTitle.setStyle("-fx-font-size: 20pt;");
         Button btnGoToHomePage = new Button("Go to home page");
         btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
-
+        btnGoToHomePage.setMaxWidth(Double.MAX_VALUE);
         layoutFinal.setAlignment(Pos.CENTER);
         layoutFinal.add(labelTitle, 0,0);
-        layoutFinal.add(btnGoToHomePage, 1,1);
+        layoutFinal.add(btnGoToHomePage, 0,1);
         btnGoToHomePage.setOnAction(e->window.setScene(sceneStart));
 
     }
