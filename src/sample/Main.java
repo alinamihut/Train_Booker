@@ -106,7 +106,7 @@ public class Main extends Application {
 
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
-        hbButtons.getChildren().addAll(btnSubmitLogIn, btnGoBackLogIn);
+        hbButtons.getChildren().addAll(btnGoBackLogIn,btnSubmitLogIn);
 
         gridLogIn.add(labelUsername, 0, 0);
         gridLogIn.add(tfName, 1, 0);
@@ -176,7 +176,7 @@ public class Main extends Application {
 
         HBox hbButtonsSignUp = new HBox();
         hbButtonsSignUp.setSpacing(10.0);
-        hbButtonsSignUp.getChildren().addAll(btnSubmit, btnGoBackHome);
+        hbButtonsSignUp.getChildren().addAll(btnGoBackHome,btnSubmit);
         gridBuyTicket.add(hbButtonsSignUp, 0, 7, 7, 1);
 
         GridPane gridTripOptions = new GridPane();
@@ -311,7 +311,7 @@ public class Main extends Application {
         Label labelNumberOfTickets = new Label("Select number of tickets");
         TextField tfNumberOfTickets = new TextField();
 
-        Label labelClass = new Label("Select the class");
+        Label labelClass = new Label("Select the travel class");
         ComboBox cbClass = new ComboBox();
         cbClass.getItems().addAll("first class", "second class", "first class sleeping wagon", "second class sleeping wagon");
 
@@ -449,7 +449,7 @@ public class Main extends Application {
 
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
-        hbButtons.getChildren().addAll(btnConfirm, btnGoBackTripOptions);
+        hbButtons.getChildren().addAll(btnGoBackTripOptions,btnConfirm);
         gridTicketInfoandPrice.add(hbButtons, 0,11);
     }
 
@@ -516,7 +516,7 @@ public class Main extends Application {
                         }
                     }
                     case "second class sleeping wagon" -> {
-                        if(Integer.parseInt(tfNumberOfTickets.getText()) <= train.getSeats2SleepingClass()){
+                        if(Integer.parseInt(tfNumberOfTickets.getText()) > train.getSeats2SleepingClass()){
                             showAlert(Alert.AlertType.ERROR, gridTicketDetails.getScene().getWindow(), "Form Error!",
                                     "There are only " + train.getSeats2SleepingClass().toString() + " seats left at the specified class");
                             return false;
@@ -688,8 +688,8 @@ public class Main extends Application {
         gridPayment.add(tfCVV, 1,4);
         gridPayment.add(hbButtons, 0,5);
 
-        StackPane layoutFinal = new StackPane();
-        Scene finalScene = new Scene(layoutFinal, 400, 400);
+        GridPane layoutFinal = new GridPane();
+        Scene finalScene = new Scene(layoutFinal, 600, 400);
         btnFinalizePayment.setOnAction(e->{
             if (cbCardType.getSelectionModel().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, gridPayment.getScene().getWindow(), "Form Error!", "Please select a card type");
@@ -724,24 +724,26 @@ public class Main extends Application {
         });
     }
 
-    public void createFinalScene(Scene sceneStart, StackPane layoutFinal){
+    public void createFinalScene(Scene sceneStart, GridPane layoutFinal){
         layoutFinal.setPadding(new Insets(20, 0, 20, 20));
         Label labelTitle = new Label("Thank you for your purchase! ");
         labelTitle.setStyle("-fx-font-size: 20pt;");
         Button btnGoToHomePage = new Button("Go to home page");
         btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
 
-        //VBox vBox = new VBox();
-        //vBox.setSpacing(10);
+       // VBox vBox = new VBox();
+       // vBox.setSpacing(10);
         //vBox.setPadding(new Insets(10, 20, 10, 10));
         //vBox.getChildren().addAll(labelTitle,btnGoToHomePage);
         layoutFinal.setAlignment(Pos.CENTER);
-        labelTitle.setTranslateX(50);
-        labelTitle.setTranslateY(50);
-        btnGoToHomePage.setTranslateX(100);
-        btnGoToHomePage.setTranslateY(150);
+        layoutFinal.add(labelTitle, 0,0);
+        layoutFinal.add(btnGoToHomePage, 1,1);
+        //labelTitle.setTranslateX(50);
+        //labelTitle.setTranslateY(50);
+        //btnGoToHomePage.setTranslateX(100);
+        //btnGoToHomePage.setTranslateY(150);
         //layoutFinal.getChildren().add(btnGoToHomePage);
-        layoutFinal.getChildren().addAll(labelTitle,btnGoToHomePage);
+        //layoutFinal.getChildren().addAll(labelTitle,btnGoToHomePage);
         btnGoToHomePage.setOnAction(e->window.setScene(sceneStart));
 
     }
