@@ -15,7 +15,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -72,16 +71,6 @@ public class Main extends Application {
         Scene sceneSignUp = new Scene(gridSignUp, 700, 400);
         createSceneSignUp(sceneStart, sceneLogIn, user, gridSignUp);
         buttonSignUp.setOnAction(e -> window.setScene(sceneSignUp));
-
-        //admin
-        User admin = new User();
-        admin.setFirstName("John");
-        admin.setLastName("Doe");
-        admin.setEmail("admin@yahoo.com");
-        admin.setResidence("Cluj-Napoca");
-        admin.setPhoneNumber("0745689612");
-        admin.setPassword("admin");
-        //writeNewUser(admin);
 
         window.setScene(sceneStart);
         window.show();
@@ -317,7 +306,7 @@ public class Main extends Application {
 
         Label labelStatus = new Label("Select your status");
         ComboBox cbStatus = new ComboBox();
-        cbStatus.getItems().addAll("regular adult", "child(less than 6 years old)", "pupil", "student", "retired person");
+        cbStatus.getItems().addAll("adult", "child(less than 6 years old)", "pupil", "student", "retired person");
 
         Button btnGoBackTripOptions = new Button("Go to previous page");
         btnGoBackTripOptions.setStyle("-fx-font-size: 12pt;");
@@ -407,7 +396,7 @@ public class Main extends Application {
         
         Label labelNrOfTickets=new Label("Number of tickets: " + nrOfTickets);
         labelNrOfTickets.setStyle("-fx-font-size: 12pt;");
-        Label labelClass=new Label("Class: " + selectedClass);
+        Label labelClass=new Label("Travel class: " + selectedClass);
         labelClass.setStyle("-fx-font-size: 12pt;");
         Label labelStatus=new Label("Status of the traveler(s): " + selectedStatus);
         labelStatus.setStyle("-fx-font-size: 12pt;");
@@ -456,7 +445,6 @@ public class Main extends Application {
     public Double computePricePerTicket (Trip selectedTrip,  String selectedClass, String selectedStatus){
         Double pricePerMinute = 0.5;
 
-        //"regular adult", "child(less than 6 years old)", "pupil", "student", "retired person"
         switch (selectedClass) {
             case "first class":
             case "first class sleeping wagon":
@@ -467,7 +455,7 @@ public class Main extends Application {
                 }
                 break;
             case "second class":
-                if (selectedStatus.equals("regular adult")) {
+                if (selectedStatus.equals("adult")) {
                     pricePerMinute = 0.25;
                 } else if (selectedStatus.equals("pupil")) {
                     pricePerMinute = 0.12;
@@ -730,20 +718,10 @@ public class Main extends Application {
         labelTitle.setStyle("-fx-font-size: 20pt;");
         Button btnGoToHomePage = new Button("Go to home page");
         btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
-
-       // VBox vBox = new VBox();
-       // vBox.setSpacing(10);
-        //vBox.setPadding(new Insets(10, 20, 10, 10));
-        //vBox.getChildren().addAll(labelTitle,btnGoToHomePage);
+        btnGoToHomePage.setMaxWidth(Double.MAX_VALUE);
         layoutFinal.setAlignment(Pos.CENTER);
         layoutFinal.add(labelTitle, 0,0);
-        layoutFinal.add(btnGoToHomePage, 1,1);
-        //labelTitle.setTranslateX(50);
-        //labelTitle.setTranslateY(50);
-        //btnGoToHomePage.setTranslateX(100);
-        //btnGoToHomePage.setTranslateY(150);
-        //layoutFinal.getChildren().add(btnGoToHomePage);
-        //layoutFinal.getChildren().addAll(labelTitle,btnGoToHomePage);
+        layoutFinal.add(btnGoToHomePage, 0,1);
         btnGoToHomePage.setOnAction(e->window.setScene(sceneStart));
 
     }
@@ -1099,7 +1077,6 @@ public class Main extends Application {
                     arrivalTime = arrivalTime + train.getTimeBetweenStations()[i];
                 }
                 tripLength = arrivalTime - departureTime;
-                //countStations = indexAS - indexDS;
                 Trip trip = new Trip(train.getTrainNumber(), convertTime(departureTime), convertTime(arrivalTime),
                         convertTime(tripLength), selectedDS, selectedAS, tripLength);
                 tripOptions.add(trip);
