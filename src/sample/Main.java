@@ -15,7 +15,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -72,16 +71,6 @@ public class Main extends Application {
         Scene sceneSignUp = new Scene(gridSignUp, 700, 400);
         createSceneSignUp(sceneStart, sceneLogIn, user, gridSignUp);
         buttonSignUp.setOnAction(e -> window.setScene(sceneSignUp));
-
-        //admin
-        User admin = new User();
-        admin.setFirstName("John");
-        admin.setLastName("Doe");
-        admin.setEmail("admin@yahoo.com");
-        admin.setResidence("Cluj-Napoca");
-        admin.setPhoneNumber("0745689612");
-        admin.setPassword("admin");
-        //writeNewUser(admin);
 
         window.setScene(sceneStart);
         window.show();
@@ -333,8 +322,6 @@ public class Main extends Application {
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnGoBackTripOptions, btnGoToHomePage);
-
-
 
         gridTicketDetails.add(labelNumberOfTickets, 0, 0);
         gridTicketDetails.add(tfNumberOfTickets, 0, 1);
@@ -735,19 +722,9 @@ public class Main extends Application {
         Button btnGoToHomePage = new Button("Go to home page");
         btnGoToHomePage.setStyle("-fx-font-size: 12pt;");
 
-       // VBox vBox = new VBox();
-       // vBox.setSpacing(10);
-        //vBox.setPadding(new Insets(10, 20, 10, 10));
-        //vBox.getChildren().addAll(labelTitle,btnGoToHomePage);
         layoutFinal.setAlignment(Pos.CENTER);
         layoutFinal.add(labelTitle, 0,0);
         layoutFinal.add(btnGoToHomePage, 1,1);
-        //labelTitle.setTranslateX(50);
-        //labelTitle.setTranslateY(50);
-        //btnGoToHomePage.setTranslateX(100);
-        //btnGoToHomePage.setTranslateY(150);
-        //layoutFinal.getChildren().add(btnGoToHomePage);
-        //layoutFinal.getChildren().addAll(labelTitle,btnGoToHomePage);
         btnGoToHomePage.setOnAction(e->window.setScene(sceneStart));
 
     }
@@ -1103,7 +1080,6 @@ public class Main extends Application {
                     arrivalTime = arrivalTime + train.getTimeBetweenStations()[i];
                 }
                 tripLength = arrivalTime - departureTime;
-                //countStations = indexAS - indexDS;
                 Trip trip = new Trip(train.getTrainNumber(), convertTime(departureTime), convertTime(arrivalTime),
                         convertTime(tripLength), selectedDS, selectedAS, tripLength);
                 tripOptions.add(trip);
