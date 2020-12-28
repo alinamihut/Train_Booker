@@ -1,14 +1,14 @@
 IR1837
-Satu Mare*Baia Mare*Zalău*Cluj-Napoca*Bistriţa*
-90 120 70 150
+Satu Mare*Baia Mare*Zalău*Cluj-Napoca*Bistriţa*Suceava*Botoşani*Iaşi*
+90 120 70 150 180 60 140
 810
 10
 60
 20
-78
+80
 IR1423
-Timişoara*Arad*Deva*Alba Iulia*Sibiu*Braşov*
-60 120 120 180 100
+Timişoara*Arad*Deva*Alba Iulia*Sibiu*Braşov*Sfântu Gheorghe*Focşani*Buzău*Brăila*Galaţi*Tulcea*
+60 120 120 180 100 40 90 70 80 30 60
 440
 10
 60
@@ -34,6 +34,14 @@ IR1234
 Iaşi*Piatra Neamţ*Miercurea Ciuc*Sfântu Gheorghe*Braşov*
 120 90 200 180
 1260
+10
+60
+20
+80
+IR1375
+Satu Mare*Zalău*Cluj-Napoca*Alba Iulia*Deva*Târgu Jiu*Râmnicu Vâlcea*Piteşti*Târgovişte*Ploieşti*București*Slobozia*Călăraşi*Constanţa*
+100 70 120 60 110 90 70 40 45 90 120 90 180
+860
 10
 60
 20
