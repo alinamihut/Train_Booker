@@ -19,7 +19,7 @@ Oradea*Zalău*Cluj-Napoca*Alba Iulia*Sibiu*Braşov*
 120 70 120 180 100
 120
 10
-58
+56
 20
 80
 IR1592
