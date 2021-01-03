@@ -514,7 +514,6 @@ public class Main extends Application {
         }
         return true;
     }
-
     public void manageSeats(ComboBox cbClass, ArrayList<Train> trains, ComboBox cbSelectOption, TextField tfNumberOfTickets, String chosenTxtFile){
         String selectedTrainOption = (String) cbSelectOption.getValue();
         String selectedClass = (String) cbClass.getValue();
