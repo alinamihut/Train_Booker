@@ -19,6 +19,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+
 public class Main extends Application {
     Stage window;
     Button buttonLogIn, buttonSignUp;
@@ -894,6 +895,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
+
     public void writeUserDetails(User user) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("userDetails.txt", true))) {
             bw.write(user.getFirstName());
@@ -912,6 +914,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
+
     public void createUser(User user, TextField tfLastNameSignUp, TextField tfFirstNameSignUp, TextField tfEmailSignUp,
                            TextField tfPhoneSignUp, TextField tfResidenceSignUp, PasswordField pfPwdSignUp) {
         user = getUserInfo(user, tfLastNameSignUp, tfFirstNameSignUp, tfEmailSignUp,
