@@ -20,51 +20,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Main extends Application {
-    Stage window;
-    Button buttonLogIn, buttonSignUp;
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Train Booker");
-
-        window = primaryStage;
-
-
-        ArrayList<String> stations = new ArrayList<>();
-        parseStationList(stations);
-
-        // FIRST SCENE
-
-        BorderPane layoutStart = new BorderPane();
-        layoutStart.setPadding(new Insets(20, 0, 20, 20));
-
-        buttonSignUp = new Button("Sign Up");
-        buttonSignUp.setMaxWidth(Double.MAX_VALUE);
-        buttonLogIn = new Button("Log In");
-        buttonLogIn.setMaxWidth(Double.MAX_VALUE);
-
-        Label labelWelcome = new Label("Welcome to Train Booker!");
-        final double MAX_FONT_SIZE = 27.0;
-        labelWelcome.setFont(new Font(MAX_FONT_SIZE));
-
-        VBox layoutStartButtons = new VBox();
-        layoutStartButtons.setSpacing(10);
-        layoutStartButtons.setPadding(new Insets(0, 20, 10, 20));
-        layoutStartButtons.getChildren().addAll(buttonLogIn, buttonSignUp);
-
-        layoutStart.setBottom(layoutStartButtons);
-        layoutStart.setCenter(labelWelcome);
-        Scene sceneStart = new Scene(layoutStart, 400, 400);
-
+    public void start(Stage primaryStage) throws Exception{
+        new StartScene();
         //SCENE LOG IN
-
-        GridPane gridLogIn = new GridPane();
-        Scene sceneLogIn = new Scene(gridLogIn, 400, 400);
-        createSceneLogIn(sceneStart, stations, gridLogIn);
-        buttonLogIn.setOnAction(e -> window.setScene(sceneLogIn));
-
-        //SCENE SIGN UP
+/*
+ //SCENE SIGN UP
 
         User user = new User();
         GridPane gridSignUp = new GridPane();
@@ -74,8 +34,10 @@ public class Main extends Application {
 
         window.setScene(sceneStart);
         window.show();
-    }
 
+        */
+    }
+/*
     public void createSceneLogIn(Scene sceneStart, ArrayList<String> stations, GridPane gridLogIn) throws IOException {
         gridLogIn.setAlignment(Pos.CENTER);
         gridLogIn.setHgap(10);
@@ -960,15 +922,6 @@ public class Main extends Application {
         }
     }
 
-    public static void parseStationList(ArrayList<String> stations) throws IOException {
-        File file = new File("D:\\Train_Booker\\Train_Booker\\stations.txt");
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String string;
-        while ((string = br.readLine()) != null) {
-            stations.add(string);
-        }
-    }
-
     public static void createTrains(ArrayList<Train> trains, String chosenTxtFile) {
         try {
             FileReader fileTrainNumbers = new FileReader(chosenTxtFile);
@@ -1097,7 +1050,7 @@ public class Main extends Application {
         }
         return finalTime;
     }
-
+*/
     public static void main(String[] args) {
         launch(args);
     }
