@@ -12,11 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class Login extends Stage {
+public class Login {
     public static void createSceneLogIn(Scene sceneStart, GridPane gridLogIn, Stage window) throws IOException {
         gridLogIn.setAlignment(Pos.CENTER);
         gridLogIn.setHgap(10);
         gridLogIn.setVgap(12);
+        gridLogIn.setStyle("-fx-background-color:lightblue");
 
         Button btnSubmitLogIn = new Button("Submit");
         btnSubmitLogIn.setStyle("-fx-font-size: 12pt;");
@@ -25,16 +26,19 @@ public class Login extends Stage {
         btnGoBackLogIn.setStyle("-fx-font-size: 12pt;");
         btnGoBackLogIn.setOnAction(e -> window.setScene(sceneStart));
 
-        Label labelUsername = new Label("Username:");
+        Label labelEmail = new Label("Email:");
+        labelEmail.setStyle("-fx-font-size: 12pt;");
         TextField tfName = new TextField();
+
         Label labelPassword = new Label("Password:");
+        labelPassword.setStyle("-fx-font-size: 12pt;");
         PasswordField pfPassword = new PasswordField();
 
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnGoBackLogIn, btnSubmitLogIn);
 
-        gridLogIn.add(labelUsername, 0, 0);
+        gridLogIn.add(labelEmail, 0, 0);
         gridLogIn.add(tfName, 1, 0);
         gridLogIn.add(labelPassword, 0, 1);
         gridLogIn.add(pfPassword, 1, 1);

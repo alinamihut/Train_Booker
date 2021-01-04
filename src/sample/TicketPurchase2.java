@@ -26,6 +26,7 @@ public class TicketPurchase2 {
         gridTripOptions.setHgap(10);
         gridTripOptions.setVgap(12);
         gridTripOptions.setPadding(new Insets(30));
+        gridTripOptions.setStyle("-fx-background-color:lightblue");
 
         Label label = new Label("Trip options from " + tripOptions.get(0).getDepartureStation() + " to " +
                 tripOptions.get(0).getArrivalStation());

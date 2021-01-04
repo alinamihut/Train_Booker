@@ -19,6 +19,7 @@ public class TicketPurchase3 {
         gridTicketDetails.setHgap(10);
         gridTicketDetails.setVgap(12);
         gridTicketDetails.setPadding(new Insets(30));
+        gridTicketDetails.setStyle("-fx-background-color:lightblue");
 
         Label labelNumberOfTickets = new Label("Select number of tickets");
         TextField tfNumberOfTickets = new TextField();

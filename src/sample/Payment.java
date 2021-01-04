@@ -17,9 +17,10 @@ public class Payment {
         gridPayment.setHgap(10);
         gridPayment.setVgap(12);
         gridPayment.setPadding(new Insets(30));
+        gridPayment.setStyle("-fx-background-color:lightblue");
 
         Label labelTitle = new Label("Introduce your card information ");
-        labelTitle.setStyle("-fx-font-size: 20pt;");
+        labelTitle.setStyle("-fx-font-size: 18pt;");
         Label labelCardType = new Label("Card type:");
         labelCardType.setStyle("-fx-font-size: 14pt;");
         ComboBox cbCardType = new ComboBox();
@@ -50,6 +51,7 @@ public class Payment {
         HBox hbButtons = new HBox();
         hbButtons.setSpacing(10.0);
         hbButtons.getChildren().addAll(btnGoBackPrevious,btnFinalizePayment);
+
         gridPayment.add(labelTitle, 0,0);
         gridPayment.add(labelCardType, 0,1);
         gridPayment.add(cbCardType, 1,1);
@@ -94,10 +96,8 @@ public class Payment {
             String chosenTxtFile = FileManager.chooseTxtFile(localDatePicked);
             SeatManager.manageSeats(cbClass, trains, cbSelectOption, tfNumberOfTickets, chosenTxtFile);
             table.getItems().clear();
-            FinalScene.createFinalScene(sceneStart,layoutFinal, window);
+            FinalScene.createFinalScene(sceneStart, layoutFinal, window);
             window.setScene(finalScene);
-
         });
     }
-
 }

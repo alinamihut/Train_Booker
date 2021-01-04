@@ -3,7 +3,6 @@ package sample;
 public class PriceCalculator {
     public static Double computePricePerTicket(Trip selectedTrip, String selectedClass, String selectedStatus){
         Double pricePerMinute = 0.5;
-
         switch (selectedClass) {
             case "first class":
             case "first class sleeping wagon":
@@ -32,5 +31,4 @@ public class PriceCalculator {
         }
         return selectedTrip.getTripLengthInMinutes() * pricePerMinute;
     }
-
 }

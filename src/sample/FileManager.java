@@ -133,6 +133,7 @@ public class FileManager {
             e.printStackTrace();
         }
     }
+
     public static Integer getIndexForSelectedClass(String selectedClass) {
         return switch (selectedClass) {
             case "first class" -> 4;
@@ -142,6 +143,7 @@ public class FileManager {
             default -> -1;
         };
     }
+
     public static void updateSeatsTrainInfo(String selectedTrainOption, String selectedClass, TextField tfNumberOfTickets, String chosenTxtFile){
         try {
             FileReader fileTrainNumbers = new FileReader(chosenTxtFile);

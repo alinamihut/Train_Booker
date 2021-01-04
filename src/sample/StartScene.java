@@ -6,24 +6,26 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import java.io.IOException;
-public class StartScene extends Stage {
+public class StartScene {
 
     public static void create(Stage window) throws IOException {
-        Button buttonSignUp = new Button("Sign Up");
-        Button buttonLogIn = new Button("Log In");
         BorderPane layoutStart = new BorderPane();
         layoutStart.setPadding(new Insets(20, 0, 20, 20));
+        layoutStart.setStyle("-fx-background-color:lightblue");
 
+        Button buttonSignUp = new Button("Sign Up");
+        Button buttonLogIn = new Button("Log In");
         buttonSignUp.setMaxWidth(Double.MAX_VALUE);
-
         buttonLogIn.setMaxWidth(Double.MAX_VALUE);
 
         Label labelWelcome = new Label("Welcome to Train Booker!");
         final double MAX_FONT_SIZE = 27.0;
         labelWelcome.setFont(new Font(MAX_FONT_SIZE));
+        labelWelcome.setTextFill(Color.web("#191970"));
 
         VBox layoutStartButtons = new VBox();
         layoutStartButtons.setSpacing(10);

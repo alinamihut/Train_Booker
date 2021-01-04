@@ -22,6 +22,7 @@ public class DataValidation {
         }
         return false;
     }
+
     public static boolean validateLogIn(TextField tfName, TextField pfPassword) {
         try {
             FileReader file = new FileReader("D:\\Train_Booker\\Train_Booker\\users.txt");
@@ -59,5 +60,4 @@ public class DataValidation {
             return false;
         }
     }
-
 }

@@ -14,6 +14,7 @@ public class TicketPurchase1 {
         gridBuyTicket.setAlignment(Pos.CENTER);
         gridBuyTicket.setHgap(10);
         gridBuyTicket.setVgap(12);
+        gridBuyTicket.setStyle("-fx-background-color:lightblue");
 
         Label labelDepartureStation = new Label("Select your departure station");
         gridBuyTicket.add(labelDepartureStation, 0, 0);

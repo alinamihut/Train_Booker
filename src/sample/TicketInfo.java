@@ -27,9 +27,10 @@ public class TicketInfo {
         gridTicketInfoandPrice.setHgap(10);
         gridTicketInfoandPrice.setVgap(12);
         gridTicketInfoandPrice.setPadding(new Insets(30));
+        gridTicketInfoandPrice.setStyle("-fx-background-color:lightblue");
 
         Label labelTitle = new Label("Your trip details");
-        labelTitle.setStyle("-fx-font-size: 20pt;");
+        labelTitle.setStyle("-fx-font-size: 18pt;");
         Label labelTrainNumber = new Label("Train number: " + selectedTrip.getTrainNumber());
         labelTrainNumber.setStyle("-fx-font-size: 12pt;");
         Label labelDepartureDate = new Label("Departure date: " + localDatePicked);
@@ -82,7 +83,7 @@ public class TicketInfo {
         btnGoBackTripOptions.setOnAction(e -> window.setScene(sceneTicketDetails));
 
         GridPane gridPayment = new GridPane();
-        Scene scenePayment = new Scene(gridPayment, 850, 600);
+        Scene scenePayment = new Scene(gridPayment, 800, 500);
         Button btnConfirm = new Button("Continue with the payment");
         btnConfirm.setStyle("-fx-font-size: 12pt;");
 
